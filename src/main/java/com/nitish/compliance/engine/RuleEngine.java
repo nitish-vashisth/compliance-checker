@@ -44,4 +44,11 @@ public class RuleEngine {
 
         return ruleEvaluator.evaluate(rule, signals);
     }
+
+    public RuleResult evaluate(
+            RuleDefinition rule,
+            Map<String, SignalEvidence> signals
+    ) {
+        return ruleEvaluator.evaluate(rule, signals);
+    }
 }

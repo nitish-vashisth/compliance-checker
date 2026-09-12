@@ -1,4 +1,13 @@
 com/nitish/compliance/engine/JsonRuleRepositoryTest.class
 com/nitish/compliance/engine/RuleEngineTest.class
+com/nitish/compliance/pack/RequirementPackSourceTypeTest.class
+com/nitish/compliance/pack/RequirementTypeTest.class
+com/nitish/compliance/pack/RequirementPackStatusTest.class
+com/nitish/compliance/pack/RequirementPackServiceTest.class
+com/nitish/compliance/pack/JsonRequirementPackRepositoryTest.class
+com/nitish/compliance/pack/RequirementPackControllerTest.class
+com/nitish/compliance/pack/RequirementPackTest.class
 com/nitish/compliance/ComplianceApplicationTests.class
 com/nitish/compliance/engine/RuleEvaluatorTest.class
+com/nitish/compliance/pack/RequirementPackSourceTest.class
+com/nitish/compliance/pack/ApplicabilitySignalTest.class

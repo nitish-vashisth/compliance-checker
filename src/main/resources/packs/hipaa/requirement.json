@@ -1,0 +1,82 @@
+{
+  "id": "HIPAA",
+  "name": "Health Insurance Portability and Accountability Act",
+  "version": "1.0",
+  "requirementType": "LAW",
+  "jurisdiction": "US",
+  "status": "APPROVED",
+  "effectiveDate": "1996-08-21",
+  "sources": [
+    {
+      "name": "U.S. Department of Health and Human Services",
+      "url": "https://www.hhs.gov/hipaa/index.html",
+      "type": "GOVERNMENT_DOCUMENTATION"
+    }
+  ],
+  "applicabilitySignals": [
+    {
+      "id": "data.health_data",
+      "name": "Health data processed",
+      "description": "Whether the organisation processes health-related data",
+      "dataType": "BOOLEAN",
+      "required": true
+    }
+  ],
+  "derivedConcepts": [
+    {
+      "id": "regulated_health_data",
+      "name": "Regulated health data",
+      "description": "Health-related information that may fall within the scope of HIPAA"
+    }
+  ],
+  "applicabilityRules": [
+    {
+      "id": "HIPAA-R01",
+      "description": "Organisation processes health-related data",
+      "expression": "data.health_data == TRUE"
+    }
+  ],
+  "requirements": [
+    {
+      "id": "HIPAA-REQ-001",
+      "name": "Protect health information",
+      "description": "Implement appropriate safeguards for protected health information"
+    }
+  ],
+  "verificationRequirements": [
+    {
+      "id": "HIPAA-VERIFY-001",
+      "name": "Confirm HIPAA role",
+      "description": "Confirm whether the organisation is a covered entity or business associate"
+    }
+  ],
+  "discoveryQuestions": [
+    {
+      "id": "HIPAA-Q-001",
+      "question": "Does the organisation handle protected health information?",
+      "purpose": "Determine whether HIPAA-related requirements may apply"
+    }
+  ],
+  "evidenceRequirements": [
+    {
+      "id": "HIPAA-EVIDENCE-001",
+      "name": "Health data classification",
+      "description": "Evidence showing whether customer-managed data contains protected health information"
+    }
+  ],
+  "capabilityMappings": [
+    {
+      "requirementId": "HIPAA-REQ-001",
+      "capability": "Atlassian Cloud HIPAA support",
+      "supportLevel": "SUPPORTED",
+      "description": "Atlassian provides capabilities relevant to HIPAA requirements for eligible offerings and configurations"
+    }
+  ],
+  "testScenarios": [
+    {
+      "id": "HIPAA-TEST-001",
+      "name": "US healthcare organisation processing health data",
+      "description": "Customer is a US healthcare organisation and processes health-related data"
+    }
+  ]
+}

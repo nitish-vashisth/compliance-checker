@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.nitish.compliance.pack.JsonRequirementPackRepositoryTest
+-------------------------------------------------------------------------------
+Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.037 s -- in com.nitish.compliance.pack.JsonRequirementPackRepositoryTest

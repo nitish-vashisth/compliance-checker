@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.nitish.compliance.ComplianceApplicationTests
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.362 s -- in com.nitish.compliance.ComplianceApplicationTests
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.358 s -- in com.nitish.compliance.ComplianceApplicationTests

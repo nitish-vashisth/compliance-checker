@@ -2,3 +2,12 @@
 /Users/vandna/Documents/compliance-checker/src/test/java/com/nitish/compliance/engine/JsonRuleRepositoryTest.java
 /Users/vandna/Documents/compliance-checker/src/test/java/com/nitish/compliance/engine/RuleEngineTest.java
 /Users/vandna/Documents/compliance-checker/src/test/java/com/nitish/compliance/engine/RuleEvaluatorTest.java
+/Users/vandna/Documents/compliance-checker/src/test/java/com/nitish/compliance/pack/ApplicabilitySignalTest.java
+/Users/vandna/Documents/compliance-checker/src/test/java/com/nitish/compliance/pack/JsonRequirementPackRepositoryTest.java
+/Users/vandna/Documents/compliance-checker/src/test/java/com/nitish/compliance/pack/RequirementPackControllerTest.java
+/Users/vandna/Documents/compliance-checker/src/test/java/com/nitish/compliance/pack/RequirementPackServiceTest.java
+/Users/vandna/Documents/compliance-checker/src/test/java/com/nitish/compliance/pack/RequirementPackSourceTest.java
+/Users/vandna/Documents/compliance-checker/src/test/java/com/nitish/compliance/pack/RequirementPackSourceTypeTest.java
+/Users/vandna/Documents/compliance-checker/src/test/java/com/nitish/compliance/pack/RequirementPackStatusTest.java
+/Users/vandna/Documents/compliance-checker/src/test/java/com/nitish/compliance/pack/RequirementPackTest.java
+/Users/vandna/Documents/compliance-checker/src/test/java/com/nitish/compliance/pack/RequirementTypeTest.java
