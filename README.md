@@ -575,3 +575,5 @@ Phase 10 ░░░░░░░░░░░░░░░░░░░░  Planned
 The immediate next milestone is therefore:
 
 > **Phase 2 — Build a configuration-driven rule engine and create the first HIPAA rule pack.**
+
+For the regulatory knowledge lifecycle and ownership model, see [Compliance Knowledge Management](docs/compliance-knowledge-management.md).
