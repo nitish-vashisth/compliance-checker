@@ -1,7 +1,6 @@
 package com.nitish.compliance.assessment;
 
 import com.nitish.compliance.engine.RuleEngine;
-import com.nitish.compliance.engine.rules.HealthcareDataRule;
 import com.nitish.compliance.model.RuleResult;
 import com.nitish.compliance.model.SignalEvidence;
 
@@ -9,15 +8,13 @@ import java.util.Map;
 
 public class AssessmentService {
 
+    private static final String HIPAA_RULE_ID = "HIPAA-001-R01";
+    private static final String HIPAA_REQUIREMENT_ID = "HIPAA-001";
+
     private final RuleEngine ruleEngine;
-    private final HealthcareDataRule healthcareDataRule;
 
-    public AssessmentService(
-            RuleEngine ruleEngine,
-            HealthcareDataRule healthcareDataRule) {
-
+    public AssessmentService(RuleEngine ruleEngine) {
         this.ruleEngine = ruleEngine;
-        this.healthcareDataRule = healthcareDataRule;
     }
 
     public AssessmentResult assess(
@@ -25,7 +22,7 @@ public class AssessmentService {
 
         RuleResult result =
                 ruleEngine.evaluate(
-                        healthcareDataRule,
+                        HIPAA_RULE_ID,
                         signals);
 
         AssessmentStatus status = switch (result) {
@@ -41,7 +38,7 @@ public class AssessmentService {
         };
 
         return new AssessmentResult(
-                healthcareDataRule.requirementId(),
+                HIPAA_REQUIREMENT_ID,
                 status,
                 result
         );

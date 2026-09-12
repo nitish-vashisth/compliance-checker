@@ -1,11 +1,10 @@
 package com.nitish.compliance.engine;
 
-import com.nitish.compliance.engine.rules.HealthcareDataRule;
 import com.nitish.compliance.model.Evidence;
+import com.nitish.compliance.model.RuleResult;
 import com.nitish.compliance.model.Signal;
 import com.nitish.compliance.model.SignalEvidence;
 import com.nitish.compliance.model.SignalValue;
-import com.nitish.compliance.model.RuleResult;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
@@ -43,11 +42,18 @@ class RuleEngineTest {
                         signalEvidence
                 );
 
-        RuleEngine engine = new RuleEngine();
+        RuleRepository repository =
+                new JsonRuleRepository();
+
+        RuleEvaluator evaluator =
+                new RuleEvaluator();
+
+        RuleEngine engine =
+                new RuleEngine(repository, evaluator);
 
         RuleResult result =
                 engine.evaluate(
-                        new HealthcareDataRule(),
+                        "HIPAA-001-R01",
                         signals
                 );
 

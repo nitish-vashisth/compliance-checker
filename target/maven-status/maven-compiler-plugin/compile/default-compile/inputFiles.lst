@@ -1,0 +1,17 @@
+/Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/ComplianceCheckerApplication.java
+/Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/assessment/AssessmentResult.java
+/Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/assessment/AssessmentService.java
+/Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/assessment/AssessmentStatus.java
+/Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/engine/JsonRuleRepository.java
+/Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/engine/RuleCondition.java
+/Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/engine/RuleDefinition.java
+/Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/engine/RuleEngine.java
+/Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/engine/RuleEvaluator.java
+/Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/engine/RuleOperator.java
+/Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/engine/RuleRepository.java
+/Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/model/Evidence.java
+/Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/model/Rule.java
+/Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/model/RuleResult.java
+/Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/model/Signal.java
+/Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/model/SignalEvidence.java
+/Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/model/SignalValue.java
