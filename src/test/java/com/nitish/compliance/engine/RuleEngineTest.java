@@ -1,0 +1,59 @@
+package com.nitish.compliance.engine;
+
+import com.nitish.compliance.engine.rules.HealthcareDataRule;
+import com.nitish.compliance.model.Evidence;
+import com.nitish.compliance.model.Signal;
+import com.nitish.compliance.model.SignalEvidence;
+import com.nitish.compliance.model.SignalValue;
+import com.nitish.compliance.model.RuleResult;
+import org.junit.jupiter.api.Test;
+
+import java.time.Instant;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class RuleEngineTest {
+
+    @Test
+    void shouldReturnTrueWhenHealthDataIsPresent() {
+
+        Signal signal = new Signal(
+                "data.health_data",
+                SignalValue.TRUE
+        );
+
+        Evidence evidence = new Evidence(
+                "CUSTOMER_PROVIDED",
+                "questionnaire-001",
+                "Customer processes patient health information",
+                Instant.now()
+        );
+
+        SignalEvidence signalEvidence =
+                new SignalEvidence(
+                        signal,
+                        List.of(evidence)
+                );
+
+        Map<String, SignalEvidence> signals =
+                Map.of(
+                        signal.id(),
+                        signalEvidence
+                );
+
+        RuleEngine engine = new RuleEngine();
+
+        RuleResult result =
+                engine.evaluate(
+                        new HealthcareDataRule(),
+                        signals
+                );
+
+        assertEquals(
+                RuleResult.TRUE,
+                result
+        );
+    }
+}
