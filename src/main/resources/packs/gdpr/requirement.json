@@ -1,0 +1,114 @@
+{
+  "id": "GDPR",
+  "name": "General Data Protection Regulation",
+  "version": "1.0",
+  "requirementType": "LAW",
+  "jurisdiction": "EU",
+  "status": "APPROVED",
+  "effectiveDate": "2018-05-25",
+  "sources": [
+    {
+      "name": "European Commission - Data protection",
+      "url": "https://commission.europa.eu/law/law-topic/data-protection/data-protection-eu_en",
+      "type": "GOVERNMENT_DOCUMENTATION"
+    }
+  ],
+  "applicabilitySignals": [
+    {
+      "id": "data.personal_data",
+      "name": "Personal data processed",
+      "description": "Whether the organisation processes personal data",
+      "dataType": "BOOLEAN",
+      "required": true
+    },
+    {
+      "id": "organisation.operates_in_eu",
+      "name": "Organisation operates in the EU",
+      "description": "Whether the organisation operates in the European Union",
+      "dataType": "BOOLEAN",
+      "required": true
+    }
+  ],
+  "derivedConcepts": [
+    {
+      "id": "personal_data_processing",
+      "name": "Personal data processing",
+      "description": "Processing of personal data that may fall within GDPR scope"
+    }
+  ],
+  "applicabilityRules": [
+    {
+      "id": "GDPR-R01",
+      "description": "Personal data is processed and the organisation operates in the EU",
+      "expression": {
+        "operator": "AND",
+        "signal": null,
+        "value": null,
+        "children": [
+          {
+            "operator": "EQUALS",
+            "signal": "data.personal_data",
+            "value": "TRUE",
+            "children": []
+          },
+          {
+            "operator": "EQUALS",
+            "signal": "organisation.operates_in_eu",
+            "value": "TRUE",
+            "children": []
+          }
+        ]
+      }
+    }
+  ],
+  "requirements": [
+    {
+      "id": "GDPR-REQ-001",
+      "name": "Personal data protection",
+      "description": "Apply appropriate safeguards and controls for personal data processing"
+    }
+  ],
+  "verificationRequirements": [
+    {
+      "id": "GDPR-VERIFY-001",
+      "name": "Confirm GDPR scope",
+      "description": "Confirm the organisation's processing activities and GDPR territorial scope"
+    }
+  ],
+  "discoveryQuestions": [
+    {
+      "id": "GDPR-Q-001",
+      "question": "Does the organisation process personal data?",
+      "purpose": "Determine whether GDPR personal-data scope may exist",
+      "signal": "data.personal_data"
+    },
+    {
+      "id": "GDPR-Q-002",
+      "question": "Does the organisation operate in the European Union?",
+      "purpose": "Determine whether EU territorial scope may be relevant",
+      "signal": "organisation.operates_in_eu"
+    }
+  ],
+  "evidenceRequirements": [
+    {
+      "id": "GDPR-EVIDENCE-001",
+      "name": "Personal data processing evidence",
+      "description": "Evidence showing whether personal data is processed"
+    }
+  ],
+  "capabilityMappings": [
+    {
+      "requirementId": "GDPR-REQ-001",
+      "capability": "Atlassian Cloud privacy and data protection controls",
+      "supportLevel": "SUPPORTED",
+      "description": "Atlassian Cloud provides privacy and data protection capabilities relevant to GDPR requirements"
+    }
+  ],
+  "testScenarios": [
+    {
+      "id": "GDPR-TEST-001",
+      "name": "EU organisation processing personal data",
+      "description": "Organisation operates in the EU and processes personal data"
+    }
+  ]
+}

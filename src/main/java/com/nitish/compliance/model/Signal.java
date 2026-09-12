@@ -17,8 +17,10 @@ AI
 That's evidence's responsibility.
 * */
 
+import com.nitish.compliance.engine.SignalData;
+
 public record Signal(
         String id,
-        SignalValue value
+        SignalData value
 ) {
 }

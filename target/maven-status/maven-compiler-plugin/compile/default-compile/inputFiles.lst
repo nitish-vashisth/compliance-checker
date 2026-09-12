@@ -6,6 +6,8 @@
 /Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/engine/RuleEvaluator.java
 /Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/engine/RuleOperator.java
 /Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/engine/RuleRepository.java
+/Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/engine/SignalData.java
+/Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/engine/SignalState.java
 /Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/model/Evidence.java
 /Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/model/RuleResult.java
 /Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/model/Signal.java
@@ -14,7 +16,6 @@
 /Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/pack/ApplicabilityDecisionService.java
 /Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/pack/ApplicabilityResult.java
 /Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/pack/ApplicabilityRule.java
-/Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/pack/ApplicabilityRuleMapper.java
 /Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/pack/ApplicabilitySignal.java
 /Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/pack/ApplicabilityStatus.java
 /Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/pack/AssessmentResponse.java
@@ -35,6 +36,9 @@
 /Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/pack/RequirementPackSourceType.java
 /Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/pack/RequirementPackStatus.java
 /Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/pack/RequirementType.java
+/Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/pack/RuleExpression.java
+/Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/pack/RuleExpressionEvaluator.java
+/Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/pack/RuleExpressionOperator.java
 /Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/pack/SignalDataType.java
 /Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/pack/TestScenario.java
 /Users/vandna/Documents/compliance-checker/src/main/java/com/nitish/compliance/pack/VerificationRequirement.java

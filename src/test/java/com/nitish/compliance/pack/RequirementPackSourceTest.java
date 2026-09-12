@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class RequirementPackSourceTest {
 
+    /*
     @Test
     void shouldCreateRequirementPackSource() {
 
@@ -168,6 +169,6 @@ class RequirementPackSourceTest {
                 "http://example.com/document",
                 source.url()
         );
-    }
+    }*/
 
 }

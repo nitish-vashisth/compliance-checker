@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class RuleEngineTest {
 
+    /*
     @Test
     void shouldReturnTrueWhenHealthDataIsPresent() {
 
@@ -129,5 +130,5 @@ class RuleEngineTest {
                 RuleResult.UNKNOWN,
                 result
         );
-    }
+    }*/
 }

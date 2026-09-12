@@ -2,7 +2,6 @@ package com.nitish.compliance.engine;
 
 import com.nitish.compliance.model.RuleResult;
 import com.nitish.compliance.model.SignalEvidence;
-import com.nitish.compliance.model.SignalValue;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -23,12 +22,20 @@ public class RuleEvaluator {
             return evaluateMissingSignal(condition);
         }
 
-        SignalValue actualValue =
+        SignalData signalData =
                 signalEvidence.signal().value();
 
-        if (actualValue == SignalValue.UNKNOWN) {
+        if (signalData.state() != SignalState.PROVIDED) {
             return RuleResult.UNKNOWN;
         }
+
+        Object value = signalData.value();
+
+        if (value == null) {
+            return RuleResult.UNKNOWN;
+        }
+
+        String actualValue = String.valueOf(value);
 
         return switch (condition.operator()) {
             case EQUALS ->
@@ -46,19 +53,19 @@ public class RuleEvaluator {
     }
 
     private RuleResult evaluateEquals(
-            SignalValue actualValue,
+            String actualValue,
             String expectedValue) {
 
-        return actualValue.name().equals(expectedValue)
+        return actualValue.equals(expectedValue)
                 ? RuleResult.TRUE
                 : RuleResult.FALSE;
     }
 
     private RuleResult evaluateNotEquals(
-            SignalValue actualValue,
+            String actualValue,
             String expectedValue) {
 
-        return actualValue.name().equals(expectedValue)
+        return actualValue.equals(expectedValue)
                 ? RuleResult.FALSE
                 : RuleResult.TRUE;
     }

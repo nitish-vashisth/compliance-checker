@@ -20,6 +20,20 @@
       "description": "Whether the organisation processes health-related data",
       "dataType": "BOOLEAN",
       "required": true
+    },
+    {
+      "id": "organisation.country",
+      "name": "Organisation country",
+      "description": "Country where the organisation operates or is established",
+      "dataType": "STRING",
+      "required": true
+    },
+    {
+      "id": "organisation.is_business_associate",
+      "name": "Organisation is a business associate",
+      "description": "Whether the organisation acts as a HIPAA business associate",
+      "dataType": "BOOLEAN",
+      "required": false
     }
   ],
   "derivedConcepts": [
@@ -32,8 +46,39 @@
   "applicabilityRules": [
     {
       "id": "HIPAA-R01",
-      "description": "Organisation processes health-related data",
-      "expression": "data.health_data == TRUE"
+      "description": "Health-related data is processed and the organisation is in the US or acts as a business associate",
+      "expression": {
+        "operator": "AND",
+        "signal": null,
+        "value": null,
+        "children": [
+          {
+            "operator": "EQUALS",
+            "signal": "data.health_data",
+            "value": "TRUE",
+            "children": []
+          },
+          {
+            "operator": "OR",
+            "signal": null,
+            "value": null,
+            "children": [
+              {
+                "operator": "EQUALS",
+                "signal": "organisation.country",
+                "value": "US",
+                "children": []
+              },
+              {
+                "operator": "EQUALS",
+                "signal": "organisation.is_business_associate",
+                "value": "TRUE",
+                "children": []
+              }
+            ]
+          }
+        ]
+      }
     }
   ],
   "requirements": [
@@ -54,7 +99,20 @@
     {
       "id": "HIPAA-Q-001",
       "question": "Does the organisation handle protected health information?",
-      "purpose": "Determine whether HIPAA-related requirements may apply"
+      "purpose": "Determine whether HIPAA-related requirements may apply",
+      "signal": "data.health_data"
+    },
+    {
+      "id": "HIPAA-Q-002",
+      "question": "In which country is the organisation established or operating?",
+      "purpose": "Determine whether US jurisdiction may be relevant to HIPAA applicability",
+      "signal": "organisation.country"
+    },
+    {
+      "id": "HIPAA-Q-003",
+      "question": "Does the organisation act as a HIPAA business associate?",
+      "purpose": "Determine whether HIPAA may apply through a business associate relationship",
+      "signal": "organisation.is_business_associate"
     }
   ],
   "evidenceRequirements": [

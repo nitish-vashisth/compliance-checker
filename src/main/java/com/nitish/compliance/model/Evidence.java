@@ -17,6 +17,7 @@ public record Evidence(
         String sourceType,
         String sourceReference,
         String statement,
-        Instant collectedAt
+        Instant collectedAt,
+        EvidenceConfidence confidence
 ) {
 }
