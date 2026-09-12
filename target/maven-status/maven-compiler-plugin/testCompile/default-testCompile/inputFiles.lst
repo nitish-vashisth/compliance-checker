@@ -1,2 +1,4 @@
 /Users/vandna/Documents/compliance-checker/src/test/java/com/nitish/compliance/ComplianceApplicationTests.java
+/Users/vandna/Documents/compliance-checker/src/test/java/com/nitish/compliance/engine/JsonRuleRepositoryTest.java
 /Users/vandna/Documents/compliance-checker/src/test/java/com/nitish/compliance/engine/RuleEngineTest.java
+/Users/vandna/Documents/compliance-checker/src/test/java/com/nitish/compliance/engine/RuleEvaluatorTest.java

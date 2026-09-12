@@ -62,4 +62,72 @@ class RuleEngineTest {
                 result
         );
     }
+
+    @Test
+    void shouldThrowExceptionWhenRuleDoesNotExist() {
+
+        RuleRepository repository =
+                new JsonRuleRepository();
+
+        RuleEvaluator evaluator =
+                new RuleEvaluator();
+
+        RuleEngine engine =
+                new RuleEngine(repository, evaluator);
+
+        IllegalArgumentException exception =
+                org.junit.jupiter.api.Assertions.assertThrows(
+                        IllegalArgumentException.class,
+                        () -> engine.evaluate(
+                                "DOES-NOT-EXIST",
+                                Map.of()
+                        )
+                );
+
+        assertEquals(
+                "Rule not found: DOES-NOT-EXIST",
+                exception.getMessage()
+        );
+    }
+
+    @Test
+    void shouldReturnUnknownWhenSignalIsUnknown() {
+
+        Signal signal = new Signal(
+                "data.health_data",
+                SignalValue.UNKNOWN
+        );
+
+        SignalEvidence signalEvidence =
+                new SignalEvidence(
+                        signal,
+                        List.of()
+                );
+
+        Map<String, SignalEvidence> signals =
+                Map.of(
+                        signal.id(),
+                        signalEvidence
+                );
+
+        RuleRepository repository =
+                new JsonRuleRepository();
+
+        RuleEvaluator evaluator =
+                new RuleEvaluator();
+
+        RuleEngine engine =
+                new RuleEngine(repository, evaluator);
+
+        RuleResult result =
+                engine.evaluate(
+                        "HIPAA-001-R01",
+                        signals
+                );
+
+        assertEquals(
+                RuleResult.UNKNOWN,
+                result
+        );
+    }
 }

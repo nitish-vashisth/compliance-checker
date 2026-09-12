@@ -1,2 +1,4 @@
+com/nitish/compliance/engine/JsonRuleRepositoryTest.class
 com/nitish/compliance/engine/RuleEngineTest.class
 com/nitish/compliance/ComplianceApplicationTests.class
+com/nitish/compliance/engine/RuleEvaluatorTest.class

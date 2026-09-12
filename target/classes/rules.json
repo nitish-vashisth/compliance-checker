@@ -6,7 +6,6 @@
       "signal": "data.health_data",
       "operator": "EQUALS",
       "value": "TRUE"
-    },
-    "result": "TRUE"
+    }
   }
 ]

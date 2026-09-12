@@ -1,10 +1,7 @@
-com/nitish/compliance/assessment/AssessmentResult.class
 com/nitish/compliance/engine/RuleEvaluator$1.class
 com/nitish/compliance/model/SignalEvidence.class
-com/nitish/compliance/assessment/AssessmentService.class
 com/nitish/compliance/engine/RuleRepository.class
 com/nitish/compliance/engine/JsonRuleRepository.class
-com/nitish/compliance/model/Rule.class
 com/nitish/compliance/engine/RuleEngine.class
 com/nitish/compliance/ComplianceCheckerApplication.class
 com/nitish/compliance/engine/RuleOperator.class
@@ -14,7 +11,5 @@ com/nitish/compliance/engine/RuleEvaluator.class
 com/nitish/compliance/engine/JsonRuleRepository$1.class
 com/nitish/compliance/model/RuleResult.class
 com/nitish/compliance/model/Evidence.class
-com/nitish/compliance/assessment/AssessmentStatus.class
 com/nitish/compliance/model/Signal.class
-com/nitish/compliance/assessment/AssessmentService$1.class
 com/nitish/compliance/engine/RuleDefinition.class
