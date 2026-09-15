@@ -1,200 +1,361 @@
 # AI Regulatory Knowledge POC v2
 
-## From Authoritative Regulatory Sources to Customer-Specific Regulatory and Atlassian Readiness
+## From Authoritative Regulatory Sources to Customer-Specific Regulatory Assessment and Walmart Readiness
 
 **Status:** POC
 **Primary proving ground:** HIPAA
-**Primary use case:** Pre-sales regulatory and Atlassian readiness assessment
+**Primary objective:** Regulatory applicability + regulatory requirement assessment
+**Future objective:** Walmart capability/readiness mapping
 **Implementation principle:** AI-generated knowledge + deterministic execution + provenance + human validation
 
 ---
 
 # 1. Objective
 
-The objective of this POC is to prove that an AI-driven pipeline can transform authoritative regulatory sources into structured, traceable and executable regulatory knowledge.
+The objective of this POC is to prove that an AI-assisted pipeline can transform authoritative regulatory sources into structured, traceable and executable regulatory knowledge.
 
-The system should then use that knowledge to:
+The first POC must answer:
 
-1. Understand a regulatory framework.
-2. Determine the types of organisations, relationships, data and activities that can bring a customer into scope.
-3. Discover candidate customer signals.
-4. Identify high-value signals that should actually be collected from a customer.
-5. Generate targeted discovery questions.
-6. Generate a small customer-facing assessment profile.
-7. Execute deterministic applicability rules against customer input.
-8. Identify applicable regulatory requirements.
-9. Understand the customer's Atlassian usage context.
-10. Map applicable requirements to relevant Atlassian capabilities.
-11. Identify coverage, configuration requirements, customer responsibilities and gaps.
-12. Maintain traceability from every important conclusion back to authoritative evidence.
+> Given a limited set of high-value facts about a customer, which regulatory frameworks/rules may apply, why do they apply, what regulatory requirements become relevant, and what information is still missing?
 
-The POC is **not** intended to provide legal advice or make an authoritative legal determination.
+The POC must **not** require a customer to provide hundreds of regulatory signals.
 
-The system should produce results such as:
+The regulatory knowledge model may contain a large number of internal signals and rules. However, the customer-facing assessment must expose only a small number of high-value firmographic signals and targeted questions.
+
+The first POC intentionally stops after:
+
+```text
+Customer Input
+      |
+      v
+Signal Resolution
+      |
+      v
+Derived Concepts
+      |
+      v
+Regulatory Applicability
+      |
+      v
+Regulatory Requirements
+      |
+      v
+Missing Information
+```
+
+Walmart capability mapping is a separate Phase B.
+
+---
+
+# 2. What This POC Is Trying to Build
+
+The goal is **not** to build a simple:
+
+> "Does HIPAA apply?"
+
+checker.
+
+The goal is to build a reusable regulatory reasoning pipeline:
+
+```text
+Authoritative Sources
+        |
+        v
+Source Family
+        |
+        v
+Regulatory Knowledge
+        |
+        v
+Candidate Signals
+        |
+        v
+Derived Concepts
+        |
+        v
+Applicability Rules
+        |
+        v
+Regulatory Requirements
+        |
+        v
+High-Value Assessment Profile
+        |
+        v
+Customer Input
+        |
+        v
+Deterministic Assessment
+        |
+        v
+Regulatory Applicability
+        |
+        v
+Regulatory Requirements
+        |
+        v
+Missing Information
+```
+
+The architecture should eventually support:
 
 ```text
 HIPAA
-  |
-  +-- Applicability: LIKELY_APPLICABLE
-  |
-  +-- Reason:
-  |     Customer processes PHI
-  |     on behalf of a US healthcare organisation
-  |
-  +-- Relevant requirements:
-  |     Business Associate requirements
-  |     Security requirements
-  |     etc.
-  |
-  +-- Atlassian relevance:
-  |     Jira Cloud is used to process/store customer data
-  |
-  +-- Atlassian capability mapping:
-  |     Supported
-  |     Configuration required
-  |     Customer responsibility
-  |     Unknown / requires verification
+GDPR
+DORA
+NIS2
+PCI DSS
+FedRAMP
+CJIS
+DPDP
+CCPA/CPRA
+LGPD
+and other frameworks
 ```
 
-The key objective is therefore:
-
-> **Do not build a "law checker". Build a regulatory reasoning and readiness pipeline.**
+but HIPAA is the first proving ground.
 
 ---
 
-# 2. Core Design Principles
+# 3. Important Scope Decision
 
-## 2.1 AI is not the legal authority
+The POC has two phases.
+
+## Phase A — Regulatory Assessment
+
+This is the first and primary POC.
+
+```text
+Authoritative Regulatory Sources
+              |
+              v
+      Regulatory Knowledge
+              |
+              v
+           Signals
+              |
+              v
+      Derived Concepts
+              |
+              v
+      Applicability Rules
+              |
+              v
+         Requirements
+              |
+              v
+       High-Value Signals
+              |
+              v
+      Assessment Profile
+              |
+              v
+       Customer Input
+              |
+              v
+       Deterministic Engine
+              |
+              v
+   Regulatory Applicability
+              |
+              v
+   Regulatory Requirements
+```
+
+## Phase B — Walmart Readiness
+
+Only after Phase A works:
+
+```text
+Phase A Result
+      |
+      v
+Customer Walmart Usage
+      |
+      v
+Walmart Knowledge
+      |
+      v
+Capability Mapping
+      |
+      v
+Coverage / Configuration / Responsibility
+      |
+      v
+Readiness / Gap Analysis
+```
+
+This separation is intentional.
+
+The POC must first prove:
+
+> **Can we reliably determine what regulatory requirements matter to a customer?**
+
+Only then should we ask:
+
+> **How does Walmart help address those requirements?**
+
+---
+
+# 4. Core Design Principles
+
+## 4.1 AI is not the legal authority
 
 AI is responsible for:
 
+* source discovery
 * source understanding
-* knowledge extraction
+* regulatory knowledge extraction
 * candidate signal discovery
+* derived concept generation
 * candidate rule generation
 * requirement extraction
+* exception extraction
 * question generation
-* Atlassian knowledge extraction
-* candidate mappings
+* high-value signal selection
+* assessment profile generation
+* test scenario generation
 
 The deterministic application is responsible for:
 
+* resolving customer signals
 * executing approved rules
-* resolving signals
 * evaluating expressions
-* producing deterministic results
-* calculating missing information
-* producing repeatable assessments
+* calculating applicability
+* determining missing information
+* producing repeatable results
 
 Humans are responsible for:
 
-* validating generated knowledge
+* validating regulatory knowledge
 * approving rules
 * resolving legal ambiguity
-* approving Atlassian mappings
-* deciding whether generated knowledge is production-ready
+* validating source interpretation
+* approving production-ready regulatory packs
 
 ---
 
-## 2.2 Preserve source provenance
+# 5. Preserve Provenance
 
-Every important regulatory statement should be traceable to:
+Every important conclusion must be traceable.
 
-```text
-Framework
-    |
-    Source
-    |
-    Section
-    |
-    Source passage / reference
-    |
-    Extracted knowledge
-    |
-    Rule / requirement
-    |
-    Assessment result
-```
-
-Never generate an unexplained rule such as:
+The minimum traceability chain is:
 
 ```text
-if industry == HEALTHCARE
-then HIPAA = TRUE
+Assessment Result
+      |
+      v
+Rule
+      |
+      v
+Derived Concept / Signal
+      |
+      v
+Regulatory Requirement / Statement
+      |
+      v
+Source Section
+      |
+      v
+Authoritative Source
 ```
 
-without being able to explain:
+For example:
 
 ```text
-Why does this rule exist?
-Which source supports it?
-Which section supports it?
-Is this explicitly stated or inferred?
-What assumptions were made?
+HIPAA = LIKELY_APPLICABLE
+        |
+        v
+HIPAA-R001
+        |
+        v
+potential_business_associate_relationship
+        |
+        +-- data.phi = TRUE
+        +-- acts_on_behalf_of_customer = TRUE
+        |
+        v
+Regulatory statement
+        |
+        v
+HHS source
 ```
+
+The system must always be able to answer:
+
+1. Why did this rule exist?
+2. Which source supports it?
+3. Which section supports it?
+4. Is the conclusion explicitly stated or inferred?
+5. Which customer facts caused the rule to evaluate to TRUE?
+6. What assumptions were made?
+7. What information is still missing?
 
 ---
 
-# 3. What This POC Is Actually Proving
+# 6. Do Not Confuse Regulatory Concepts
 
-The POC should prove the following end-to-end flow:
+The following must remain separate.
+
+## 6.1 Customer Fact
+
+An observable fact.
+
+Example:
 
 ```text
-AUTHORITATIVE SOURCES
-        |
-        v
-SOURCE REGISTRATION
-        |
-        v
-SOURCE UNDERSTANDING
-        |
-        v
-REGULATORY KNOWLEDGE
-        |
-        +----------------+
-        |                |
-        v                v
-     SIGNALS         REQUIREMENTS
-        |
-        v
-DERIVED CONCEPTS
-        |
-        v
-APPLICABILITY RULES
-        |
-        v
-QUESTION / EVIDENCE MODEL
-        |
-        v
-ASSESSMENT PROFILE
-        |
-        v
-CUSTOMER INPUT
-        |
-        v
-DETERMINISTIC RULE ENGINE
-        |
-        v
-REGULATORY APPLICABILITY
-        |
-        v
-REGULATORY REQUIREMENTS
-        |
-        v
-ATLASSIAN USAGE CONTEXT
-        |
-        v
-ATLASSIAN CAPABILITY MAPPING
-        |
-        v
-READINESS / GAP ANALYSIS
+customer processes PHI = TRUE
 ```
+
+## 6.2 Derived Concept
+
+A concept derived from one or more facts.
+
+Example:
+
+```text
+potential_business_associate_relationship = TRUE
+```
+
+## 6.3 Applicability
+
+A conclusion from approved rules.
+
+Example:
+
+```text
+HIPAA = LIKELY_APPLICABLE
+```
+
+## 6.4 Regulatory Requirement
+
+An obligation resulting from the applicable regulatory context.
+
+Example:
+
+```text
+Business Associate requirements are relevant.
+```
+
+## 6.5 Technical Control
+
+A technical implementation concept.
+
+Example:
+
+```text
+access control
+encryption
+audit logging
+```
+
+These are not automatically equivalent to regulatory requirements.
 
 ---
 
-# 4. Three-Layer Assessment Model
+# 7. Regulatory Assessment Model
 
-The system must explicitly separate three layers.
+The regulatory assessment has two layers.
 
 ## Layer 1 — Regulatory Applicability
 
@@ -202,37 +363,48 @@ Question:
 
 > Does this regulatory framework or provision potentially apply to this customer in this context?
 
-Inputs can include:
+The assessment must consider more than:
 
-* organisation
+* headquarters
+* industry
+* company size
+
+It may need to consider:
+
 * geography
 * industry
 * organisation type
 * regulatory status
-* data
-* data subjects
-* activities
 * customer relationships
 * supplier relationships
 * processing relationships
+* data types
+* data subjects
+* processing activities
+* storage activities
+* transfer activities
 * contractual relationships
+* role performed for another organisation
 
 Example:
 
 ```text
 Customer:
-  HQ = India
-  Industry = SaaS
-  Serves = US healthcare organisation
-  Processes = PHI
-  Acts on behalf of customer = Yes
 
-Result:
+HQ = India
+Industry = SaaS
+Serves = US healthcare organisation
+Processes = PHI
+Processes PHI on behalf of customer = YES
+```
 
+Potential result:
+
+```text
 HIPAA = LIKELY_APPLICABLE
 ```
 
-The system must not assume:
+The system must not make simplistic assumptions such as:
 
 ```text
 HQ = India
@@ -242,32 +414,26 @@ Industry = Software
 HIPAA NOT APPLICABLE
 ```
 
-because regulatory applicability may depend on activities and relationships.
-
 ---
 
-# 5. Layer 2 — Regulatory Requirements
+# 8. Layer 2 — Regulatory Requirements
 
 Question:
 
-> Given the customer's role, activities, data and relationships, which regulatory requirements become relevant?
+> Given the customer's regulatory role, activities, data and relationships, which regulatory requirements become relevant?
 
-This layer must consider context.
-
-For example:
+For example, these customers may interact with HIPAA differently:
 
 ```text
 Customer A:
-  Healthcare provider
+Healthcare provider
 
 Customer B:
-  SaaS provider acting as a business associate
+SaaS provider processing PHI on behalf of a healthcare organisation
 
 Customer C:
-  Generic software company with no PHI processing
+Generic software company with no PHI processing
 ```
-
-All three can interact with HIPAA differently.
 
 Therefore:
 
@@ -288,201 +454,188 @@ Geography
 Relevant Requirements
 ```
 
-This layer should identify:
+Requirements may include:
 
-* obligations
-* safeguards
-* documentation requirements
+* privacy obligations
+* security obligations
+* administrative safeguards
+* technical safeguards
+* physical safeguards
 * contractual requirements
+* documentation requirements
 * notification requirements
-* data handling requirements
-* security requirements
-* privacy requirements
-* exceptions
-* customer responsibilities
-* verification requirements
+* data handling obligations
+* access requirements
+* governance obligations
+* retention obligations
+* other regulatory obligations
 
-The system must not automatically convert every regulatory requirement into a specific Atlassian product feature.
+The POC must preserve the distinction between:
+
+```text
+"Regulation applies"
+```
+
+and:
+
+```text
+"Requirement X is relevant"
+```
 
 ---
 
-# 6. Layer 3 — Atlassian Capability Mapping
+# 9. Why Customer Relationships Matter
+
+A core design principle of this POC is:
+
+> Regulatory applicability can depend on what the customer does for another organisation, not just who the customer is.
+
+For example:
+
+```text
+Customer:
+Indian SaaS company
+
+Customer relationship:
+US healthcare organisation
+
+Activity:
+Processes PHI on behalf of that organisation
+```
+
+The following signal:
+
+```text
+HQ = India
+```
+
+is insufficient to determine HIPAA applicability.
+
+A targeted signal such as:
+
+```text
+processes_phi_on_behalf_of_another_organisation
+```
+
+can be much more valuable.
+
+Therefore the system should model:
+
+```text
+Organisation
+    |
+    +-- Customers
+    +-- Suppliers
+    +-- Partners
+    +-- Healthcare organisations
+    +-- Financial institutions
+    +-- Government organisations
+    +-- Other regulated entities
+```
+
+---
+
+# 10. HIPAA Source Strategy
+
+The POC should not begin with only one narrow HIPAA page.
+
+Start from the authoritative HHS HIPAA professional resource as the source-family root.
+
+Conceptually:
+
+```text
+HHS HIPAA for Professionals
+        |
+        +-- HIPAA overview
+        |
+        +-- Privacy Rule
+        |
+        +-- Security Rule
+        |
+        +-- Breach Notification Rule
+        |
+        +-- Business Associates
+        |
+        +-- Enforcement
+        |
+        +-- Relevant guidance
+        |
+        +-- Relevant regulatory references
+```
+
+The objective is not to scrape the entire HHS website.
+
+The objective is:
+
+> Start with an authoritative regulatory root, identify the authoritative sources needed to understand scope and requirements, then extract structured regulatory knowledge from those sources.
+
+---
+
+# 11. Step 2 vs Step 3
+
+These two steps must remain separate.
+
+## Step 2 — Source Discovery
 
 Question:
 
-> How does the customer's Atlassian usage intersect with the applicable regulatory requirements, and what Atlassian capabilities can address those requirements?
+> Which authoritative sources do we need?
 
-This is a separate knowledge problem from regulatory applicability.
-
-The system therefore needs an independent Atlassian knowledge base.
+Output:
 
 ```text
-REGULATORY REQUIREMENT
-        |
-        v
-CUSTOMER ATLASSIAN USAGE
-        |
-        v
-ATLASSIAN PRODUCT
-        |
-        v
-ATLASSIAN CAPABILITY
-        |
-        v
-COVERAGE / LIMITATION
-        |
-        v
-CONFIGURATION / CUSTOMER RESPONSIBILITY
-        |
-        v
-EVIDENCE
+HIPAA source family
+
+Source 1
+HHS HIPAA overview
+
+Source 2
+Privacy Rule
+
+Source 3
+Security Rule
+
+Source 4
+Business Associates
+
+...
 ```
 
-Possible outcomes:
+## Step 3 — Source Understanding
+
+Question:
+
+> What does each source actually say?
+
+Output:
 
 ```text
-SUPPORTED
-SUPPORTED_WITH_CONFIGURATION
-PARTIALLY_SUPPORTED
-CUSTOMER_RESPONSIBILITY
-NOT_SUPPORTED
-NOT_APPLICABLE_TO_ATLASSIAN_USAGE
-UNKNOWN_REQUIRES_VERIFICATION
+Actors
+Data
+Activities
+Relationships
+Conditions
+Definitions
+Obligations
+Exceptions
+Scope
+```
+
+Therefore:
+
+```text
+STEP 2
+Find the right documents.
+
+STEP 3
+Understand the contents of those documents.
 ```
 
 ---
 
-# 7. Why Atlassian Knowledge Must Be Separate
+# 12. Folder Structure
 
-Regulatory sources answer:
-
-> What does HIPAA require?
-
-Atlassian sources answer:
-
-> What does Atlassian provide?
-
-These are different claims and require different provenance.
-
-Do not combine:
-
-```text
-HIPAA regulation
-+
-Atlassian documentation
-```
-
-into one undifferentiated knowledge model.
-
-Instead:
-
-```text
-REGULATORY KNOWLEDGE
-    |
-    +-- HIPAA
-    +-- GDPR
-    +-- DORA
-    +-- etc.
-
-ATLASSIAN KNOWLEDGE
-    |
-    +-- Products
-    +-- Capabilities
-    +-- Security controls
-    +-- Privacy capabilities
-    +-- Data residency
-    +-- Encryption
-    +-- Identity
-    +-- Audit
-    +-- Compliance programs
-    +-- Configuration
-    +-- Limitations
-```
-
-The mapping between the two is its own artifact.
-
----
-
-# 8. HIPAA Source Strategy
-
-Do not start the POC with only the Business Associates page.
-
-Start with the authoritative HHS HIPAA professional resource as the **source family root**.
-
-The source family should identify and register relevant child sources such as:
-
-```text
-HHS HIPAA Overview
-    |
-    +-- Privacy Rule
-    |
-    +-- Security Rule
-    |
-    +-- Breach Notification Rule
-    |
-    +-- Enforcement
-    |
-    +-- Business Associates
-    |
-    +-- Relevant guidance
-    |
-    +-- Relevant regulatory references
-```
-
-The goal is not to scrape the entire HHS website.
-
-The goal is to prove:
-
-> Can the system start from an authoritative regulatory root and identify the authoritative source set needed to answer applicability and requirement questions?
-
----
-
-# 9. POC Scope
-
-## Included
-
-* HIPAA source family
-* HHS authoritative sources
-* Regulatory source registration
-* Source understanding
-* Regulatory knowledge extraction
-* Candidate signal generation
-* Derived concepts
-* Applicability rules
-* Requirements
-* Exceptions
-* Evidence
-* Questions
-* High-value signal selection
-* Assessment profile generation
-* Customer input template generation
-* Deterministic execution
-* Atlassian knowledge model
-* Atlassian capability mapping
-* End-to-end customer scenarios
-* Human validation
-
-## Not included
-
-* Production UI
-* Authentication
-* Production database
-* Automated legal approval
-* Automatic legal advice
-* Full HIPAA implementation
-* All US state laws
-* All Atlassian products
-* Production-grade RAG
-* Continuous regulatory monitoring
-* Automatic regulatory change management
-* Complex vector databases
-* Multi-agent orchestration
-
----
-
-# 10. Folder Structure
-
-Use the following structure:
+Recommended structure:
 
 ```text
 ai-regulatory-knowledge-poc/
@@ -492,24 +645,17 @@ ai-regulatory-knowledge-poc/
 ├── sources/
 │   │
 │   ├── hipaa/
-│   │   │
 │   │   ├── source-family.json
-│   │   │
 │   │   ├── source-001-hhs-overview.json
 │   │   ├── source-002-privacy-rule.json
 │   │   ├── source-003-security-rule.json
 │   │   ├── source-004-business-associates.json
 │   │   ├── source-005-breach-notification.json
-│   │   │
 │   │   └── raw/
-│   │       ├── source-001.html
-│   │       ├── source-002.html
-│   │       └── ...
 │   │
-│   └── atlassian/
-│       ├── source-001-trust.json
-│       ├── source-002-security.json
-│       ├── source-003-hipaa.json
+│   └── walmart/
+│       ├── source-001.json
+│       ├── source-002.json
 │       └── raw/
 │
 ├── extracted/
@@ -525,9 +671,10 @@ ai-regulatory-knowledge-poc/
 │   │   ├── evidence.json
 │   │   ├── questions.json
 │   │   ├── signal-dependencies.json
-│   │   └── assessment-profile.json
+│   │   ├── assessment-profile.json
+│   │   └── customer-input-template.json
 │   │
-│   └── atlassian/
+│   └── walmart/
 │       ├── products.json
 │       ├── capabilities.json
 │       ├── controls.json
@@ -536,7 +683,6 @@ ai-regulatory-knowledge-poc/
 │           └── hipaa.json
 │
 ├── assessments/
-│   │
 │   ├── schemas/
 │   │   ├── customer-input-schema.json
 │   │   └── assessment-result-schema.json
@@ -545,7 +691,7 @@ ai-regulatory-knowledge-poc/
 │       ├── scenario-001-hipaa-applicable.json
 │       ├── scenario-002-hipaa-not-applicable.json
 │       ├── scenario-003-insufficient-information.json
-│       └── scenario-004-atlassian-usage.json
+│       └── scenario-004-boundary-case.json
 │
 ├── validated/
 │   └── hipaa/
@@ -553,7 +699,7 @@ ai-regulatory-knowledge-poc/
 │       ├── approved-rules.json
 │       ├── approved-requirements.json
 │       ├── approved-assessment-profile.json
-│       └── approved-atlassian-mappings.json
+│       └── approved-customer-input-schema.json
 │
 └── prompts/
     ├── 01-source-discovery.md
@@ -568,18 +714,23 @@ ai-regulatory-knowledge-poc/
     ├── 10-question-generation.md
     ├── 11-high-value-signal-selection.md
     ├── 12-assessment-profile-generation.md
-    ├── 13-validation.md
-    ├── 14-test-scenario-generation.md
-    ├── 15-atlassian-knowledge-extraction.md
-    ├── 16-atlassian-capability-mapping.md
-    └── 17-final-assessment.md
+    ├── 13-customer-input-template-generation.md
+    ├── 14-validation.md
+    ├── 15-test-scenario-generation.md
+    │
+    ├── phase-b/
+    │   ├── 01-walmart-source-discovery.md
+    │   ├── 02-walmart-knowledge-extraction.md
+    │   └── 03-walmart-capability-mapping.md
+    │
+    └── final-assessment.md
 ```
 
 ---
 
-# 11. End-to-End Steps
+# 13. End-to-End POC Steps
 
-The POC consists of these steps:
+## Phase A — Regulatory Assessment
 
 ```text
 01 Source Registration
@@ -599,19 +750,26 @@ The POC consists of these steps:
 15 Validation
 16 Test Scenario Generation
 17 Requirement Pack Assembly
-18 Atlassian Source Registration
-19 Atlassian Knowledge Extraction
-20 Regulatory → Atlassian Mapping
-21 Execute Customer Assessment
-22 Adaptive Missing-Information Analysis
-23 Atlassian Readiness Assessment
-24 Final Pre-Sales Readiness Result
-25 Human Review
+18 Execute Customer Assessment
+19 Adaptive Missing-Information Analysis
+20 Final Regulatory Assessment
+```
+
+## Phase B — Walmart Readiness
+
+```text
+21 Walmart Source Registration
+22 Walmart Source Discovery
+23 Walmart Knowledge Extraction
+24 Walmart Usage Model
+25 Regulatory → Walmart Capability Mapping
+26 Walmart Readiness Assessment
+27 Final Pre-Sales Readiness Result
 ```
 
 ---
 
-# 12. STEP 1 — Source Registration
+# 14. STEP 1 — Source Registration
 
 Create a source-family record.
 
@@ -644,46 +802,80 @@ Example:
 }
 ```
 
-Important:
+Important rules:
 
-* Do not call a guidance page the law itself.
+* Do not call guidance "the law".
 * Do not invent effective dates.
 * Do not invent versions.
-* Keep source type explicit.
-* Preserve publisher and authority.
-* Preserve URLs.
+* Preserve source type.
+* Preserve publisher.
+* Preserve authority.
 * Preserve retrieval date.
-* Preserve relationships between parent and child sources.
+* Preserve source relationships.
+* Preserve URLs.
+* Preserve provenance.
 
 ---
 
-# 13. STEP 2 — Source Discovery / Source Family Construction
+# 15. STEP 2 — Source Discovery / Source Family Construction
 
-The AI should inspect the root authoritative page and identify relevant authoritative sub-sources.
+## Objective
 
-### Prompt
+Identify the authoritative source set required to understand the framework.
+
+Input:
+
+```text
+Root regulatory source
+```
+
+Output:
+
+```text
+Source family
+```
+
+For every discovered source capture:
+
+```text
+sourceId
+title
+publisher
+sourceType
+URL
+relationshipToParent
+purpose
+authorityLevel
+jurisdiction
+ruleGenerationAllowed
+contextOnly
+confidence
+reasonForInclusion
+```
+
+## Prompt
 
 ```text
 You are an authoritative regulatory source discovery system.
 
 You have been given an authoritative regulatory framework landing page.
 
-Your objective is to construct a source family for the framework.
+Your objective is to construct the authoritative source family for this framework.
 
-Do not attempt to extract all regulatory knowledge yet.
+Do not extract detailed regulatory rules yet.
 
-Identify authoritative child sources that are necessary to understand:
+Identify authoritative sources needed to understand:
 
-1. What the framework is
-2. Who may be covered
-3. What data or information is covered
-4. What activities are covered
-5. What major rules or regulations exist
-6. What major obligations exist
-7. What important exceptions or exclusions exist
-8. Which definitions materially affect applicability
-9. Which regulatory text or government sources should be treated as primary authority
-10. Which guidance pages are useful for interpretation
+1. What the framework is.
+2. Who may be covered.
+3. What data or information is covered.
+4. What activities are covered.
+5. What major rules or regulations exist.
+6. What major obligations exist.
+7. What important exceptions or exclusions exist.
+8. Which definitions materially affect applicability.
+9. Which primary regulatory sources should be used for rule generation.
+10. Which government or regulator guidance is useful for interpretation.
 
 For every source provide:
 
@@ -696,16 +888,12 @@ For every source provide:
 - purpose
 - authorityLevel
 - jurisdiction
-- whether it should be used for rule generation
-- whether it should be used only for contextual understanding
+- ruleGenerationAllowed
+- contextOnly
 - confidence
-- reason for inclusion
+- reasonForInclusion
 
-Do not invent sources.
-
-Prefer authoritative government or regulator sources.
-
-Distinguish:
+Allowed source types:
 
 PRIMARY_REGULATION
 REGULATOR_GUIDANCE
@@ -713,27 +901,68 @@ GOVERNMENT_OVERVIEW
 DEFINITIONAL_REFERENCE
 SECONDARY_SOURCE
 
-Do not treat secondary sources as primary legal authority.
+Rules:
+
+- Do not invent sources.
+- Prefer official government/regulator sources.
+- Do not treat secondary sources as primary legal authority.
+- Do not assume every linked page is relevant.
+- Include a source only when it contributes to scope, applicability, requirements, definitions, exceptions or interpretation.
 
 Output JSON only.
 ```
 
 ---
 
-# 14. STEP 3 — Source Understanding
+# 16. STEP 3 — Source Understanding
 
-Before generating rules, understand the source.
+## Objective
 
-### Prompt
+Understand the contents of each registered source before generating signals or rules.
+
+Input:
 
 ```text
-You are a regulatory knowledge extraction system.
+Registered source
+```
+
+Output:
+
+```text
+Structured source understanding
+```
+
+Extract:
+
+* document title
+* authority
+* jurisdiction
+* source type
+* subject matter
+* regulated actors
+* regulated information
+* covered activities
+* relationships
+* geographic scope
+* industry/contextual scope
+* applicability concepts
+* obligations
+* exceptions
+* exclusions
+* definitions
+* cross-references
+* ambiguity
+
+## Prompt
+
+```text
+You are a regulatory source understanding system.
 
 Understand the supplied authoritative source before generating rules.
 
 Do not determine customer applicability yet.
 
-Do not create technical controls.
+Do not generate technical controls.
 
 Do not invent requirements.
 
@@ -764,54 +993,63 @@ For every finding provide:
 - id
 - type
 - description
-- source reference
-- explicit/inferred
+- sourceReference
+- explicitOrInferred
 - confidence
 
-Never present an inference as an explicit regulatory statement.
+Important:
+
+Do not turn an inference into an explicit regulatory statement.
 
 Output JSON only.
 ```
 
-Save:
-
-```text
-extracted/hipaa/source-understanding.json
-```
-
 ---
 
-# 15. STEP 4 — Regulatory Knowledge Extraction
+# 17. STEP 4 — Regulatory Knowledge Extraction
 
-Convert the source into structured regulatory knowledge.
+## Objective
 
-Represent statements as:
+Convert source understanding into structured regulatory statements.
+
+Model:
 
 ```text
-Statement
-  |
-  +-- Actor
-  +-- Action
-  +-- Object
-  +-- Condition
-  +-- Exception
-  +-- Relationship
-  +-- Obligation
-  +-- Source
+Regulatory Statement
+    |
+    +-- Actor
+    +-- Action
+    +-- Object
+    +-- Condition
+    +-- Relationship
+    +-- Exception
+    +-- Obligation
+    +-- Source
 ```
 
-### Prompt
+## Prompt
 
 ```text
-Using only the supplied authoritative regulatory source, extract a structured regulatory knowledge model.
+Using only the supplied authoritative regulatory source and source understanding, extract structured regulatory knowledge.
 
 For every material regulatory statement identify:
 
-1. Statement ID
-2. Concise statement
-3. Statement type
+1. statementId
+2. conciseStatement
+3. statementType
+4. actor
+5. action
+6. object
+7. condition
+8. exception
+9. relationship
+10. relatedConcepts
+11. sourceSection
+12. sourceURL
+13. explicitOrInferred
+14. confidence
 
-Allowed types:
+Allowed statement types:
 
 DEFINITION
 SCOPE
@@ -825,65 +1063,53 @@ CONDITION
 PROCEDURE
 CROSS_REFERENCE
 
-4. Actor
-5. Action
-6. Object
-7. Condition
-8. Exception
-9. Relationship
-10. Related concepts
-11. Source section
-12. Source URL
-13. Explicit/inferred
-14. Confidence
-
 Rules:
 
 - Do not invent facts.
-- Do not turn guidance into mandatory law.
+- Do not turn guidance into mandatory law without qualification.
 - Do not turn examples into universal rules.
-- Preserve ambiguity.
 - Preserve exceptions.
 - Preserve definitions.
 - Preserve actor relationships.
+- Preserve uncertainty.
 - Every material statement requires provenance.
 
 Output JSON only.
 ```
 
-Save:
-
-```text
-extracted/hipaa/knowledge.json
-```
-
 ---
 
-# 16. STEP 5 — Candidate Signal Discovery
+# 18. STEP 5 — Candidate Signal Discovery
 
-This step intentionally produces a potentially large signal universe.
+## Objective
 
-That is acceptable.
+Generate the comprehensive internal signal universe.
 
-The internal signal model should be comprehensive.
+The output may be large.
 
-Possible dimensions:
+That is expected.
+
+The internal signal universe should not be confused with the customer questionnaire.
+
+Potential signal categories:
 
 ```text
 Organisation
 Geography
 Industry
 Organisation Type
+Regulatory Status
 Data
 Data Subjects
 Activities
+Processing
+Storage
+Transfers
 Relationships
 Contracts
 Technology
-Regulatory Status
 Customer Context
 Supplier Context
-Atlassian Usage
 ```
 
 Examples:
@@ -892,12 +1118,10 @@ Examples:
 organisation.country
 organisation.industry
 organisation.organisation_type
-organisation.employee_count
 
 data.phi
 data.ephi
 data.personal_data
-data.financial_data
 
 activity.collects_data
 activity.processes_data
@@ -909,24 +1133,19 @@ relationship.processor
 relationship.business_associate
 relationship.subcontractor
 
-data.subject_country
 data.storage_country
 data.processing_country
 
 contract.baa_exists
 contract.dpa_exists
-
-technology.cloud
-technology.saas
-technology.third_party_processing
 ```
 
-### Prompt
+## Prompt
 
 ```text
 You are designing a generic customer fact model for regulatory applicability.
 
-Using the extracted regulatory knowledge, identify all observable customer facts that could materially affect:
+Using the extracted regulatory knowledge, identify observable customer facts that could materially affect:
 
 - applicability
 - scope
@@ -934,7 +1153,7 @@ Using the extracted regulatory knowledge, identify all observable customer facts
 - exceptions
 - exclusions
 - verification
-- risk assessment
+- regulatory requirements
 
 Consider:
 
@@ -959,7 +1178,7 @@ Consider:
 
 For each signal provide:
 
-- id
+- signalId
 - name
 - description
 - dataType
@@ -970,7 +1189,7 @@ For each signal provide:
 - explicitOrInferred
 - confidence
 
-Signal classifications:
+Allowed classifications:
 
 DIRECT_APPLICABILITY
 INDIRECT_APPLICABILITY
@@ -978,14 +1197,11 @@ OBLIGATION_TRIGGER
 EXCEPTION_TRIGGER
 CONTEXT
 VERIFICATION
-ATLASSIAN_USAGE
 DERIVED_INPUT
 
 Important:
 
 A signal is an observable customer fact.
-
-Do not create conclusions as signals.
 
 Good:
 
@@ -995,53 +1211,46 @@ Bad:
 
 organisation.hipaa_applicable = true
 
-The second is a conclusion.
+The second is a conclusion, not a signal.
 
 Output JSON only.
 ```
 
-Save:
-
-```text
-extracted/hipaa/signals.json
-```
-
 ---
 
-# 17. STEP 6 — Derived Concept Generation
+# 19. STEP 6 — Derived Concept Generation
 
-Derived concepts are intermediate conclusions computed from raw signals.
+## Objective
+
+Create reusable intermediate regulatory concepts derived from raw signals.
 
 Example:
 
 ```text
-data.phi
+data.phi = TRUE
 +
-activity.processes_data
+acts_on_behalf_of_customer = TRUE
 +
-relationship.on_behalf_of_customer
-+
-customer.is_healthcare_entity
+customer_is_healthcare_entity = TRUE
+
+        |
+        v
+
+potential_business_associate_relationship = TRUE
 ```
 
-may produce:
-
-```text
-derived.potential_business_associate_relationship
-```
-
-### Prompt
+## Prompt
 
 ```text
 Using the regulatory knowledge and candidate signals, identify useful derived concepts.
 
-A derived concept is calculated from observable customer signals.
+A derived concept is a meaningful regulatory concept calculated from observable customer signals.
 
 It must not simply rename an existing signal.
 
 For each concept provide:
 
-- id
+- conceptId
 - name
 - description
 - inputSignals
@@ -1050,31 +1259,33 @@ For each concept provide:
 - sourceReferences
 - confidence
 
-Only create a derived concept when it:
+Create a derived concept only when it:
 
 - simplifies rule logic
 - improves reuse
 - improves explainability
 - represents a meaningful regulatory concept
 
-Do not create the final applicability result as a derived concept.
+Do not create final applicability results as derived concepts.
+
+Do not create:
+
+hipaa_applicable = true
+
+as a derived concept.
 
 Output JSON only.
 ```
 
-Save:
-
-```text
-extracted/hipaa/derived-concepts.json
-```
-
 ---
 
-# 18. STEP 7 — Applicability Rule Generation
+# 20. STEP 7 — Applicability Rule Generation
 
-Now convert approved knowledge into executable candidate rules.
+## Objective
 
-Supported operators:
+Convert approved regulatory knowledge into executable candidate rules.
+
+Allowed operators:
 
 ```text
 EQUALS
@@ -1085,43 +1296,20 @@ AND
 OR
 ```
 
-Example:
-
-```json
-{
-  "ruleId": "HIPAA-R001",
-  "description": "Potential business associate context",
-  "expression": {
-    "operator": "AND",
-    "children": [
-      {
-        "operator": "EQUALS",
-        "signal": "data.phi",
-        "value": true
-      },
-      {
-        "operator": "EQUALS",
-        "signal": "relationship.on_behalf_of_customer",
-        "value": true
-      }
-    ]
-  },
-  "outcome": {
-    "status": "LIKELY_APPLICABLE"
-  },
-  "sourceReferences": [],
-  "confidence": "HIGH",
-  "assumptions": [],
-  "unresolvedQuestions": []
-}
-```
-
-### Prompt
+Rules must operate on:
 
 ```text
-Generate candidate applicability rules from the regulatory knowledge model.
+Raw signals
++
+Approved derived concepts
+```
 
-Rules must represent conditions supported by the source.
+## Prompt
+
+```text
+Generate candidate regulatory applicability rules from the approved regulatory knowledge model.
+
+Rules must represent conditions supported by authoritative sources.
 
 Use only:
 
@@ -1153,33 +1341,38 @@ For every rule provide:
 Rules:
 
 1. Do not invent legal conclusions.
-2. Do not use industry alone unless the source supports it.
-3. Do not use geography alone unless the source supports it.
-4. Preserve OR conditions.
-5. Preserve AND conditions.
+2. Do not use industry alone unless supported by the source.
+3. Do not use geography alone unless supported by the source.
+4. Preserve AND conditions.
+5. Preserve OR conditions.
 6. Preserve exceptions.
 7. Preserve uncertainty.
 8. Do not turn missing information into FALSE.
 9. UNKNOWN must remain UNKNOWN.
+10. Every rule must have source provenance.
 
 Output JSON only.
 ```
 
-Save:
-
-```text
-extracted/hipaa/rules.json
-```
-
 ---
 
-# 19. STEP 8 — Requirement / Obligation Extraction
+# 21. STEP 8 — Regulatory Requirement / Obligation Extraction
 
-Applicability is not the same as requirements.
+## Objective
 
-Extract obligations separately.
+Separate:
 
-### Prompt
+```text
+Does the framework apply?
+```
+
+from:
+
+```text
+What requirements become relevant?
+```
+
+## Prompt
 
 ```text
 From the approved regulatory knowledge model, identify regulatory requirements and obligations.
@@ -1216,28 +1409,24 @@ ACCESS_CONTROL
 RETENTION
 OTHER
 
-Do not create technical product requirements.
+Important:
 
-Do not mention Atlassian products.
-
-The output must represent the regulatory obligation independently from technology.
+- Do not create product-specific requirements.
+- Do not mention Walmart.
+- Do not infer technical implementation from a regulatory statement.
+- Keep regulatory requirements technology-neutral.
+- Preserve the conditions under which the requirement applies.
 
 Output JSON only.
 ```
 
-Save:
-
-```text
-extracted/hipaa/requirements.json
-```
-
 ---
 
-# 20. STEP 9 — Exception / Boundary Extraction
+# 22. STEP 9 — Exception / Boundary Extraction
 
 Exceptions are first-class knowledge.
 
-### Prompt
+## Prompt
 
 ```text
 Identify all material exceptions, exclusions, thresholds, boundaries and special conditions.
@@ -1260,17 +1449,21 @@ If an exception depends on information not currently available as a signal, iden
 Output JSON only.
 ```
 
-Save:
-
-```text
-extracted/hipaa/exceptions.json
-```
-
 ---
 
-# 21. STEP 10 — Evidence Generation
+# 23. STEP 10 — Evidence Generation
 
-Evidence should explain why a result was produced.
+Evidence should explain both:
+
+```text
+Why is this applicable?
+```
+
+and:
+
+```text
+What evidence would verify it?
+```
 
 Evidence types:
 
@@ -1279,15 +1472,13 @@ REGULATORY_SOURCE
 CUSTOMER_PROVIDED
 CUSTOMER_DOCUMENT
 SYSTEM_DERIVED
-ATLASSIAN_SOURCE
-CONFIGURATION
 VERIFICATION_REQUIRED
 ```
 
-### Prompt
+## Prompt
 
 ```text
-For each rule and requirement, identify what evidence could support the conclusion.
+For each rule and requirement, identify evidence that could support the conclusion.
 
 Do not invent evidence.
 
@@ -1298,31 +1489,27 @@ For each evidence item provide:
 - supports
 - description
 - sourceReference
-- whether customer-provided
-- whether externally verifiable
-- whether required for initial assessment
+- customerProvided
+- externallyVerifiable
+- requiredForInitialAssessment
 - confidence
 
 Distinguish:
 
-1. Evidence needed to determine applicability
-2. Evidence needed to verify the conclusion
-3. Evidence needed for audit/compliance proof
+1. Evidence needed to determine applicability.
+2. Evidence needed to verify the conclusion.
+3. Evidence needed for audit/compliance proof.
 
 Output JSON only.
 ```
 
-Save:
-
-```text
-extracted/hipaa/evidence.json
-```
-
 ---
 
-# 22. STEP 11 — Discovery Question Generation
+# 24. STEP 11 — Discovery Question Generation
 
-Questions should collect facts, not ask customers to interpret law.
+Questions must collect facts.
+
+They must not ask customers to interpret law.
 
 Bad:
 
@@ -1333,18 +1520,17 @@ Are you subject to HIPAA?
 Better:
 
 ```text
-Do you provide services to a US healthcare organisation?
+Do you provide services to US healthcare organisations?
 ```
 
 Better:
 
 ```text
 Do your services create, receive, maintain or transmit
-protected health information on behalf of a US healthcare
-organisation or other HIPAA-regulated entity?
+protected health information on behalf of another organisation?
 ```
 
-### Prompt
+## Prompt
 
 ```text
 Generate customer discovery questions for unresolved regulatory signals.
@@ -1367,130 +1553,342 @@ For each question provide:
 - resolvesRequirements
 - sourceReferences
 
-Prefer questions that resolve multiple rules.
+Prefer questions that:
 
-Prefer questions that are:
-
-- simple
-- unambiguous
-- high information value
-- answerable by business users
+- resolve multiple rules
+- resolve high-impact UNKNOWN states
+- are easy for business users to answer
+- avoid legal terminology where possible
+- cannot be reliably inferred from other signals
 
 Avoid duplicate questions.
 
 Output JSON only.
 ```
 
-Save:
-
-```text
-extracted/hipaa/questions.json
-```
-
 ---
 
-# 23. STEP 12 — High-Value Signal Selection
+# 25. STEP 12 — High-Value Signal Selection
 
-This is a critical new step.
+This is one of the most important steps in the POC.
 
-The internal signal universe may contain hundreds of signals.
+The internal signal universe can be large.
 
-The customer should see only a small set.
+The customer-facing input must be small.
 
-Select signals based on:
+The goal is:
 
-```text
-Applicability impact
-+
-Number of rules affected
-+
-Ability to reduce UNKNOWN
-+
-Information value
-+
-Ease of answering
-+
-Firmographic availability
-+
-Ability to derive other signals
-```
+> Maximum regulatory discrimination with minimum customer effort.
 
-### Signal tiers
+## Signal tiers
 
 ```text
-TIER_1 — Initial assessment
-TIER_2 — Targeted follow-up
-TIER_3 — Requirement-specific
-TIER_4 — Verification/evidence
+TIER_1_INITIAL
+TIER_2_TARGETED
+TIER_3_REQUIREMENT_SPECIFIC
+TIER_4_VERIFICATION
 ```
 
-The UI should initially expose only TIER_1.
+### Tier 1
 
-### Prompt
+Initial information required for broad classification.
+
+Examples:
+
+```text
+organisation.country
+organisation.industry
+organisation.organisation_type
+organisation.operating_countries
+```
+
+### Tier 2
+
+Questions asked only when relevant.
+
+Examples:
+
+```text
+serves_healthcare_organisations
+processes_phi
+acts_on_behalf_of_another_organisation
+```
+
+### Tier 3
+
+Requirement-specific questions.
+
+Examples:
+
+```text
+data_transfer_outside_jurisdiction
+specific_retention_requirement
+specific_contractual_requirement
+```
+
+### Tier 4
+
+Verification/evidence.
+
+Examples:
+
+```text
+contract_document
+certification
+architecture_document
+configuration_evidence
+```
+
+## Signal ranking criteria
+
+Prioritize signals that:
+
+* materially affect applicability
+* affect multiple rules
+* resolve UNKNOWN
+* distinguish regulatory contexts
+* enable multiple derived concepts
+* are easy to answer
+* cannot safely be inferred from weaker signals
+* have high information value
+
+## Prompt
 
 ```text
 You are designing a minimal high-value regulatory assessment.
 
-The internal signal model may contain many candidate signals.
+The internal signal model may contain a very large number of signals.
 
-Select only the signals that should be collected during an initial customer assessment.
+Your job is NOT to expose all signals to the customer.
+
+Your job is to select the smallest useful set of signals that can determine regulatory applicability with minimal customer effort.
 
 Optimize for:
 
-1. Regulatory applicability coverage
-2. Number of rules resolved
-3. Reduction of UNKNOWN results
-4. Information value
-5. Customer answerability
-6. Reusability across requirements
-7. Ability to derive additional concepts
-8. Ability to distinguish materially different regulatory contexts
+1. Regulatory applicability coverage.
+2. Number of rules affected.
+3. Reduction of UNKNOWN results.
+4. Information value.
+5. Customer answerability.
+6. Reusability across requirements.
+7. Ability to derive other concepts.
+8. Ability to distinguish materially different regulatory contexts.
 
-Classify every signal:
+Classify every candidate signal as exactly one of:
 
 TIER_1_INITIAL
 TIER_2_TARGETED
 TIER_3_REQUIREMENT_SPECIFIC
 TIER_4_VERIFICATION
 
-Do not select a signal merely because it appears in a rule.
+Classify collection method as:
+
+PREFILLED
+CUSTOMER_QUESTION
+DERIVED
+EVIDENCE
+SYSTEM_LOOKUP
+
+Important:
+
+Do not select a signal simply because it appears in a rule.
 
 Prefer signals that resolve multiple rules.
 
 Prefer firmographic signals where reliable.
 
-Prefer targeted questions for facts that cannot be inferred reliably.
+Prefer targeted questions for facts that cannot be reliably inferred.
 
-For every selected signal provide:
+Do not ask customers to determine legal applicability.
+
+For each selected signal provide:
 
 - signalId
 - tier
+- priority
+- collectionMethod
 - reason
 - rulesAffected
+- derivedConceptsAffected
 - informationValue
 - customerAnswerability
-- preferredCollectionMethod
-- whether it can be prefilled
-- whether it requires a question
+- canBePrefilled
+- requiredForInitialAssessment
+
+For every Tier 2 signal provide:
+
+- triggerCondition
+- whyItIsDeferred
+
+For every Tier 3 signal provide:
+
+- requirementTrigger
+- whyItIsDeferred
+
+Also identify:
+
+- redundantSignals
+- lowValueSignals
+- signalsThatShouldNotBeCustomerFacing
+- signalsThatShouldBeDerivedInstead
+
+Finally produce:
+
+1. initialSignals
+2. targetedSignals
+3. requirementSpecificSignals
+4. verificationSignals
+5. excludedSignals
+6. rationale
+7. estimatedInitialQuestionCount
+8. stoppingConditions
+9. adaptiveQuestionRules
 
 Output JSON only.
 ```
 
-Save:
+---
+
+# 26. STEP 13 — Assessment Profile Generation
+
+## Objective
+
+Create the **small customer-facing assessment definition**.
+
+This is not another copy of `signals.json`.
+
+It answers:
+
+> What should the customer be asked during the initial assessment?
+
+The profile is intended to drive a future UI.
+
+Therefore:
 
 ```text
-extracted/hipaa/signal-dependencies.json
+assessment-profile.json
+        |
+        v
+     UI Renderer
+        |
+        v
+Customer Questionnaire
+```
+
+It should contain:
+
+* sections
+* fields
+* questions
+* question types
+* options
+* required status
+* conditional logic
+* collection method
+* high-value signals
+* adaptive-questioning metadata
+
+---
+
+## 26.1 Assessment Profile Methodology
+
+### Step 13.1 — Determine rule dependencies
+
+For every applicability rule:
+
+```text
+Rule
+  |
+  +-- Required signals
+  +-- Required derived concepts
+```
+
+Example:
+
+```text
+HIPAA-R001
+
+Requires:
+  data.phi
+  acts_on_behalf_of_customer
+```
+
+### Step 13.2 — Determine whether the signal can be prefilled
+
+Example:
+
+```text
+organisation.country
+```
+
+may be available from customer metadata.
+
+Use:
+
+```text
+PREFILLED
+```
+
+instead of asking.
+
+### Step 13.3 — Identify customer questions
+
+Facts such as:
+
+```text
+processes_phi
+```
+
+may require direct customer input.
+
+### Step 13.4 — Rank questions
+
+Prefer questions that:
+
+* affect many rules
+* eliminate UNKNOWN
+* distinguish important regulatory contexts
+* are easy to answer
+
+### Step 13.5 — Remove redundant questions
+
+If one question can resolve the same dependency as three questions, prefer the single high-quality question.
+
+### Step 13.6 — Define conditional questions
+
+Example:
+
+```text
+If customer serves healthcare organisations = YES
+
+then ask:
+
+Do you process PHI?
+```
+
+### Step 13.7 — Define stopping conditions
+
+The assessment should stop when:
+
+```text
+All material applicability rules are resolved
+```
+
+or:
+
+```text
+Remaining UNKNOWN rules cannot materially change the result
+```
+
+or:
+
+```text
+Required information is unavailable
 ```
 
 ---
 
-# 24. STEP 13 — Assessment Profile Generation
-
-This is the customer-facing contract.
-
-It should be significantly smaller than `signals.json`.
-
-Example:
+## 26.2 Assessment Profile Example
 
 ```json
 {
@@ -1504,7 +1902,7 @@ Example:
     {
       "id": "organisation",
       "title": "Organisation",
-      "signals": [
+      "fields": [
         {
           "signalId": "organisation.country",
           "required": true,
@@ -1540,8 +1938,6 @@ Example:
 
   "adaptiveQuestioning": true,
 
-  "allowUnknown": true,
-
   "minimumInformationPolicy": {
     "doNotAskUnnecessaryQuestions": true,
     "stopWhenMaterialRulesResolved": true
@@ -1549,15 +1945,248 @@ Example:
 }
 ```
 
-The profile should be sufficient to generate a UI.
+---
+
+## 26.3 Step 13 Prompt
+
+```text
+You are designing a minimal customer-facing regulatory assessment.
+
+You are given:
+
+1. Regulatory signals
+2. Derived concepts
+3. Applicability rules
+4. Regulatory requirements
+5. Discovery questions
+6. Signal dependencies
+
+The internal regulatory model may contain a very large number of signals.
+
+Your job is NOT to expose all signals to the customer.
+
+Your job is to design the smallest high-value initial assessment that can determine regulatory applicability with minimal customer effort.
+
+OBJECTIVE
+
+Select the minimum useful set of customer inputs required to:
+
+1. Determine important regulatory applicability conditions.
+2. Resolve as many material UNKNOWN results as possible.
+3. Distinguish materially different regulatory contexts.
+4. Identify which regulatory requirements may become relevant.
+5. Avoid asking questions that can be reliably derived or prefilled.
+6. Avoid asking customers to interpret legal requirements.
+
+SIGNAL CLASSIFICATION
+
+Classify each candidate signal as exactly one of:
+
+TIER_1_INITIAL
+TIER_2_TARGETED
+TIER_3_REQUIREMENT_SPECIFIC
+TIER_4_VERIFICATION
+
+COLLECTION METHOD
+
+Classify the preferred collection method as:
+
+PREFILLED
+CUSTOMER_QUESTION
+DERIVED
+EVIDENCE
+SYSTEM_LOOKUP
+
+HIGH-VALUE SIGNAL CRITERIA
+
+Prioritize signals that:
+
+- materially affect applicability
+- affect multiple rules
+- resolve UNKNOWN
+- distinguish different regulatory contexts
+- enable multiple derived concepts
+- are easy for a customer to answer
+- are unlikely to be ambiguous
+- cannot be safely inferred from weaker signals
+
+IMPORTANT
+
+Do not select a signal simply because it appears in a rule.
+
+Do not ask:
+
+"Are you subject to HIPAA?"
+
+Instead ask for observable facts such as:
+
+"Do you provide services to a US healthcare organisation?"
+
+"Do your services create, receive, maintain or transmit PHI?"
+
+"Do you process PHI on behalf of another organisation?"
+
+Do not ask customers to make legal determinations.
+
+For each selected signal provide:
+
+- signalId
+- tier
+- priority
+- collectionMethod
+- reason
+- rulesAffected
+- derivedConceptsAffected
+- informationValue
+- customerAnswerability
+- canBePrefilled
+- requiredForInitialAssessment
+
+For every Tier 2 signal provide:
+
+- triggerCondition
+- whyItIsDeferred
+
+For every Tier 3 signal provide:
+
+- requirementTrigger
+- whyItIsDeferred
+
+Also identify:
+
+- redundantSignals
+- lowValueSignals
+- signalsThatShouldNotBeCustomerFacing
+- signalsThatShouldBeDerivedInstead
+
+Finally produce:
+
+1. initialSignals
+2. targetedSignals
+3. requirementSpecificSignals
+4. verificationSignals
+5. excludedSignals
+6. rationale
+7. estimatedInitialQuestionCount
+8. stoppingConditions
+9. adaptiveQuestionRules
+
+Output JSON only.
+```
 
 ---
 
-# 25. STEP 14 — Customer Input Template Generation
+# 27. STEP 14 — Customer Input Template Generation
 
-The assessment profile should generate a customer input template.
+This step is different from Step 13.
+
+Step 13 answers:
+
+> What information should we collect?
+
+Step 14 answers:
+
+> How should the customer's answers be represented so the UI and rule engine can consume them?
+
+Therefore:
+
+```text
+Step 13
+Assessment Profile
+       |
+       v
+What do we ask?
+
+Step 14
+Customer Input Template
+       |
+       v
+How are the answers represented?
+```
+
+---
+
+# 28. Customer Input Design Principles
+
+## 28.1 Customer input contains facts, not conclusions
+
+Bad:
+
+```json
+{
+  "hipaaApplicable": true
+}
+```
+
+Good:
+
+```json
+{
+  "processesPHI": true
+}
+```
+
+Good:
+
+```json
+{
+  "actsOnBehalfOfAnotherOrganisation": true
+}
+```
+
+---
+
+## 28.2 UNKNOWN must be supported
+
+Do not force customers to answer:
+
+```text
+TRUE
+FALSE
+```
+
+when they don't know.
+
+Use:
+
+```text
+TRUE
+FALSE
+UNKNOWN
+```
 
 Example:
+
+```json
+{
+  "processesPHI": "UNKNOWN"
+}
+```
+
+UNKNOWN must never be silently converted into FALSE.
+
+---
+
+## 28.3 Keep internal signal IDs separate
+
+The customer should answer:
+
+```text
+Do you process PHI?
+YES
+```
+
+The system resolves that to:
+
+```text
+data.phi = TRUE
+```
+
+The customer does not need to understand internal signal identifiers.
+
+---
+
+# 29. Customer Input Template Example
 
 ```json
 {
@@ -1565,50 +2194,204 @@ Example:
   "assessmentProfileId": "HIPAA-INITIAL",
 
   "customer": {
-    "country": null,
-    "industry": null,
-    "organisationType": null
+    "country": "IN",
+    "industry": "SOFTWARE",
+    "organisationType": "SAAS_PROVIDER"
   },
 
   "answers": {
-    "HIPAA-Q001": null,
-    "HIPAA-Q002": null
+    "HIPAA-Q001": "TRUE",
+    "HIPAA-Q002": "TRUE",
+    "HIPAA-Q003": "UNKNOWN"
   }
 }
 ```
 
-This serves two purposes:
+The signal resolver converts this to:
 
-1. Future UI input contract.
-2. Deterministic rule-engine test input.
+```text
+organisation.country = IN
+organisation.industry = SOFTWARE
+organisation.organisation_type = SAAS_PROVIDER
 
-The same JSON should be usable in automated tests.
+serves_healthcare_organisations = TRUE
+processes_phi = TRUE
+acts_on_behalf_of_another_organisation = UNKNOWN
+```
+
+The rule engine then evaluates the rules.
 
 ---
 
-# 26. STEP 15 — Validation
+# 30. Step 14 Methodology
 
-Validate every generated artifact.
+### Step 14.1
 
-Validation must check:
+Read the assessment profile.
+
+### Step 14.2
+
+Create the customer-facing schema.
+
+### Step 14.3
+
+Map every answer to an internal signal.
+
+### Step 14.4
+
+Support:
+
+```text
+TRUE
+FALSE
+UNKNOWN
+```
+
+### Step 14.5
+
+Identify prefillable fields.
+
+### Step 14.6
+
+Identify conditional questions.
+
+### Step 14.7
+
+Generate empty template.
+
+### Step 14.8
+
+Generate example filled template.
+
+### Step 14.9
+
+Generate JSON Schema for automated validation.
+
+### Step 14.10
+
+Use the same input contract for:
+
+```text
+Future UI
++
+Manual testing
++
+Automated test scenarios
++
+Rule engine execution
+```
+
+---
+
+# 31. Step 14 Prompt
+
+```text
+You are designing the customer input contract for a regulatory assessment engine.
+
+You are given:
+
+1. Assessment profile
+2. Selected high-value signals
+3. Discovery questions
+4. Signal definitions
+5. Derived concepts
+6. Applicability rules
+
+Generate a customer-facing JSON input template.
+
+OBJECTIVE
+
+The template must:
+
+1. Represent all required Tier 1 inputs.
+2. Represent questions selected for the initial assessment.
+3. Support UNKNOWN / unanswered values.
+4. Preserve question-to-signal mapping.
+5. Be suitable for a future UI.
+6. Be directly consumable by a signal resolver.
+7. Be usable for deterministic rule-engine testing.
+8. Hide internal implementation details wherever possible.
+
+CUSTOMER INPUT MUST REPRESENT FACTS.
+
+Bad:
+
+"hipaaApplicable": true
+
+Good:
+
+"processesPHI": true
+
+Good:
+
+"actsOnBehalfOfAnotherOrganisation": true
+
+UNKNOWN
+
+The template must support:
+
+TRUE
+FALSE
+UNKNOWN
+
+Do not convert UNKNOWN into FALSE.
+
+STRUCTURE
+
+Create:
+
+- schema
+- emptyTemplate
+- exampleInput
+- fieldDescriptions
+- signalMappings
+- conditionalQuestions
+- prefillableFields
+
+Each field should contain:
+
+- field name
+- type
+- required
+- nullable / UNKNOWN support
+- allowed values
+- mapped signal
+- mapped question, if applicable
+
+The generated JSON should be simple enough that a frontend can render a form from the assessment profile.
+
+Do not expose final regulatory conclusions as customer input fields.
+
+Output JSON only.
+```
+
+---
+
+# 32. STEP 15 — Validation
+
+Validation must happen before the generated regulatory pack is executed.
+
+Validate:
 
 ```text
 Source traceability
 Signal validity
+Derived concept validity
 Rule validity
-Rule references
-Requirement references
-Question references
-Exception references
+Requirement validity
+Question validity
+Exception coverage
+Assessment profile references
+Customer input schema
 No orphan signals
 No orphan rules
 No unsupported legal claims
 No missing provenance
-No invalid operators
 No circular derived concepts
+UNKNOWN handling
 ```
 
-### Validation Prompt
+## Validation Prompt
 
 ```text
 Validate the generated regulatory knowledge package.
@@ -1617,7 +2400,7 @@ Check:
 
 1. Every rule references valid signals or derived concepts.
 2. Every derived concept references valid signals.
-3. Every requirement references source evidence.
+3. Every requirement references authoritative evidence.
 4. Every question resolves at least one meaningful signal.
 5. Every important applicability rule has provenance.
 6. No rule invents unsupported legal conclusions.
@@ -1628,6 +2411,9 @@ Check:
 11. No circular derived concepts exist.
 12. High-value signals are sufficient to resolve important rules.
 13. Assessment profile references valid questions and signals.
+14. Customer input template references valid profile fields.
+15. Conditional questions reference valid signals/questions.
+16. Every rule has deterministic executable syntax.
 
 Output:
 
@@ -1641,51 +2427,96 @@ Output JSON only.
 
 ---
 
-# 27. STEP 16 — Test Scenario Generation
+# 33. STEP 16 — Test Scenario Generation
 
-Generate scenarios specifically to test boundaries.
+The test suite must test both positive and negative cases.
 
 At minimum:
 
 ```text
 Scenario 1 — HIPAA likely applicable
-Scenario 2 — HIPAA likely not applicable
+Scenario 2 — HIPAA not currently indicated
 Scenario 3 — insufficient information
 Scenario 4 — customer relationship changes result
-Scenario 5 — data type changes result
-Scenario 6 — Atlassian usage introduces downstream relevance
+Scenario 5 — PHI processing changes result
+Scenario 6 — acting on behalf of another organisation changes result
 Scenario 7 — exception applies
 Scenario 8 — multiple rules produce different outcomes
+Scenario 9 — UNKNOWN remains UNKNOWN
+Scenario 10 — targeted question resolves UNKNOWN
+```
+
+## Prompt
+
+```text
+Generate deterministic customer assessment test scenarios.
+
+The scenarios must test:
+
+1. Positive applicability
+2. Negative applicability
+3. UNKNOWN / insufficient information
+4. Boundary conditions
+5. Exceptions
+6. Customer relationship changes
+7. Data type changes
+8. Processing activity changes
+9. Multiple rules
+10. Conditional questions
+11. UNKNOWN resolution
+
+For every scenario provide:
+
+- scenarioId
+- description
+- customerInput
+- expectedSignals
+- expectedDerivedConcepts
+- expectedRuleResults
+- expectedApplicability
+- expectedRequirements
+- expectedMissingInformation
+
+Do not invent legal outcomes.
+
+Expected results must be derived from the approved rules.
+
+Output JSON only.
 ```
 
 ---
 
-# 28. STEP 17 — Requirement Pack Assembly
+# 34. STEP 17 — Requirement Pack Assembly
 
-The regulatory requirement pack should contain:
+The approved regulatory knowledge pack should contain:
 
 ```text
 Framework
-Source references
+Sources
+Source Understanding
+Knowledge
 Signals
-Derived concepts
+Derived Concepts
 Rules
 Requirements
 Exceptions
 Evidence
 Questions
-Assessment profile
-Test scenarios
+Signal Dependencies
+Assessment Profile
+Customer Input Schema
+Test Scenarios
+Validation
 ```
 
-It must represent **approved regulatory knowledge**, not raw AI output.
-
-Structure:
+Example:
 
 ```json
 {
   "framework": {},
   "sources": [],
+  "sourceUnderstanding": {},
+  "knowledge": [],
   "signals": [],
   "derivedConcepts": [],
   "rules": [],
@@ -1693,178 +2524,839 @@ Structure:
   "exceptions": [],
   "evidence": [],
   "questions": [],
+  "signalDependencies": [],
   "assessmentProfile": {},
+  "customerInputSchema": {},
   "testScenarios": [],
   "validation": {}
 }
 ```
 
----
-
-# 29. STEP 18 — Atlassian Source Registration
-
-Atlassian sources are registered separately.
-
-Examples of source categories:
-
-```text
-Atlassian Trust
-Atlassian Compliance
-Atlassian Security Documentation
-Atlassian Product Documentation
-Atlassian Data Residency Documentation
-Atlassian Privacy Documentation
-Atlassian Product Configuration Documentation
-```
-
-Each source must contain:
-
-```text
-sourceId
-publisher
-product
-sourceType
-URL
-publication/update information if available
-authority
-scope
-evidence type
-```
-
-Do not use generic web sources as authoritative evidence for Atlassian capability claims when an official Atlassian source exists.
+Only validated artifacts should be used by the deterministic assessment engine.
 
 ---
 
-# 30. STEP 19 — Atlassian Knowledge Extraction
+# 35. STEP 18 — Execute Customer Assessment
 
-Extract knowledge about what Atlassian provides.
+This is the first major POC demonstration.
 
-Do NOT extract regulatory applicability here.
+Input:
+
+```text
+customer-input.json
+```
+
+Processing:
+
+```text
+Customer Input
+      |
+      v
+Signal Resolver
+      |
+      v
+Observable Signals
+      |
+      v
+Derived Concepts
+      |
+      v
+Approved Rules
+      |
+      v
+Rule Engine
+      |
+      v
+Applicability Results
+      |
+      v
+Requirement Evaluation
+```
+
+AI should not execute the rules.
+
+The deterministic rule engine should.
+
+---
+
+# 36. Signal Resolver
+
+The customer-facing answer:
+
+```text
+Do you process PHI?
+YES
+```
+
+should become:
+
+```text
+data.phi = TRUE
+```
+
+Similarly:
+
+```text
+Do you process PHI on behalf of another organisation?
+YES
+```
+
+becomes:
+
+```text
+relationship.on_behalf_of_customer = TRUE
+```
+
+The signal resolver should also validate:
+
+* data type
+* allowed values
+* UNKNOWN
+* required fields
+* mappings
+* question dependencies
+
+---
+
+# 37. Example Customer Scenario
+
+Customer:
+
+```text
+HQ:
+India
+
+Industry:
+Software
+
+Organisation Type:
+SaaS Provider
+
+Serves healthcare organisations:
+Yes
+
+Processes PHI:
+Yes
+
+Processes PHI on behalf of another organisation:
+Yes
+```
+
+Customer input:
+
+```json
+{
+  "assessmentId": "CUSTOMER-001",
+  "assessmentProfileId": "HIPAA-INITIAL",
+
+  "customer": {
+    "country": "IN",
+    "industry": "SOFTWARE",
+    "organisationType": "SAAS_PROVIDER"
+  },
+
+  "answers": {
+    "HIPAA-Q001": "TRUE",
+    "HIPAA-Q002": "TRUE",
+    "HIPAA-Q003": "TRUE"
+  }
+}
+```
+
+---
+
+# 38. Expected Assessment Result
+
+The engine might produce:
+
+```text
+REGULATORY APPLICABILITY
+
+HIPAA
+Status: LIKELY_APPLICABLE
+
+Reasons:
+
+- Customer serves healthcare organisations.
+- Customer processes PHI.
+- Customer processes PHI on behalf of another organisation.
+```
+
+Then:
+
+```text
+REGULATORY REQUIREMENTS
+
+Business Associate requirements
+Status: RELEVANT
+
+Security requirements
+Status: RELEVANT
+
+Additional requirements
+Status: REQUIRES FURTHER ASSESSMENT
+```
+
+Then:
+
+```text
+MISSING INFORMATION
+
+No additional information required for initial applicability.
+
+Requirement-specific information may still be required.
+```
+
+The exact result must come from the approved rules and source evidence.
+
+---
+
+# 39. Negative Scenario
+
+Customer:
+
+```text
+HQ:
+India
+
+Industry:
+Software
+
+Organisation Type:
+SaaS Provider
+
+Serves healthcare organisations:
+No
+
+Processes PHI:
+No
+
+Processes PHI on behalf of another organisation:
+No
+```
+
+Expected:
+
+```text
+HIPAA
+Status: NOT_CURRENTLY_INDICATED
+```
+
+The result should still include:
+
+```text
+Reason:
+The available customer facts do not satisfy
+the approved HIPAA applicability conditions.
+```
+
+---
+
+# 40. UNKNOWN Scenario
+
+Customer:
+
+```text
+HQ:
+India
+
+Industry:
+Software
+
+Serves healthcare organisations:
+UNKNOWN
+
+Processes PHI:
+UNKNOWN
+
+Processes PHI on behalf of another organisation:
+UNKNOWN
+```
+
+Expected:
+
+```text
+HIPAA
+Status: UNKNOWN
+```
+
+Missing information:
+
+```text
+1. Whether customer serves healthcare organisations.
+2. Whether customer processes PHI.
+3. Whether customer processes PHI on behalf of another organisation.
+```
+
+The system must not say:
+
+```text
+HIPAA = NOT APPLICABLE
+```
+
+just because information is missing.
+
+---
+
+# 41. STEP 19 — Adaptive Missing-Information Analysis
+
+After every assessment, identify unresolved material rules.
+
+Process:
+
+```text
+Assessment
+    |
+    v
+Which material rules are UNKNOWN?
+    |
+    v
+Which signals are missing?
+    |
+    v
+Which question resolves the most important UNKNOWNs?
+    |
+    v
+Ask next question
+    |
+    v
+Re-run assessment
+```
+
+The system should prefer the question with the highest information value.
+
+Example:
+
+```text
+Current:
+
+HIPAA = UNKNOWN
+
+Missing:
+data.phi
+acts_on_behalf_of_customer
+
+Available questions:
+
+Q1 — Do you process PHI?
+Q2 — Do you store data?
+Q3 — Do you have an information security policy?
+
+Choose:
+
+Q1
+```
+
+because it directly resolves the material applicability uncertainty.
+
+---
+
+# 42. Adaptive Question Selection Prompt
+
+```text
+You are selecting the next best customer question for a regulatory assessment.
+
+You are given:
+
+- Current customer signals
+- Current rule results
+- UNKNOWN rules
+- Missing signals
+- Available questions
+- Rule dependencies
+
+Select the single highest-value next question.
+
+Prioritize questions that:
+
+1. Resolve the greatest number of material UNKNOWN rules.
+2. Can change regulatory applicability.
+3. Can distinguish important regulatory contexts.
+4. Are easy for the customer to answer.
+5. Do not duplicate information already available.
+6. Do not ask the customer to interpret legal requirements.
+
+Do not ask questions whose answers cannot materially affect the current assessment.
+
+Return:
+
+- questionId
+- question
+- signalsResolved
+- rulesResolved
+- reason
+- informationValue
+
+Output JSON only.
+```
+
+---
+
+# 43. Assessment Stopping Conditions
+
+The system should stop asking questions when one of the following is true:
+
+## Condition 1
+
+All material applicability rules are resolved.
+
+## Condition 2
+
+Remaining UNKNOWN rules cannot materially change the assessment.
+
+## Condition 3
+
+Required information is unavailable.
+
+## Condition 4
+
+The assessment has reached a configured question budget.
+
+Example:
+
+```text
+Initial questions: 5
+Targeted questions: maximum 5
+```
+
+The system should then report:
+
+```text
+Assessment incomplete
+```
+
+rather than inventing a conclusion.
+
+---
+
+# 44. Regulatory Result Model
+
+Do not use only:
+
+```text
+TRUE
+FALSE
+```
+
+Use:
+
+```text
+APPLICABLE
+LIKELY_APPLICABLE
+POTENTIALLY_APPLICABLE
+NOT_CURRENTLY_INDICATED
+NOT_APPLICABLE
+UNKNOWN
+```
+
+For the initial POC, the preferred statuses are:
+
+```text
+LIKELY_APPLICABLE
+POTENTIALLY_APPLICABLE
+NOT_CURRENTLY_INDICATED
+UNKNOWN
+```
+
+This avoids false certainty.
+
+---
+
+# 45. Confidence Model
+
+Confidence should reflect evidence completeness, not generic AI confidence.
+
+## HIGH
+
+All material applicability conditions are resolved using reliable customer signals and approved rules.
+
+## MEDIUM
+
+Core conditions are resolved but one or more assumptions remain.
+
+## LOW
+
+Important applicability conditions remain unresolved.
+
+## UNKNOWN
+
+Available customer information is insufficient to reach a meaningful conclusion.
+
+---
+
+# 46. Assessment Result Schema
+
+Example:
+
+```json
+{
+  "assessmentId": "CUSTOMER-001",
+
+  "frameworkResults": [
+    {
+      "frameworkId": "HIPAA",
+      "status": "LIKELY_APPLICABLE",
+      "confidence": "HIGH",
+
+      "reasons": [
+        {
+          "ruleId": "HIPAA-R001",
+          "description": "Customer processes PHI on behalf of another organisation"
+        }
+      ],
+
+      "requirements": [
+        {
+          "requirementId": "HIPAA-REQ-001",
+          "status": "RELEVANT",
+          "reason": "Applicable based on customer role and processing context"
+        }
+      ],
+
+      "missingInformation": []
+    }
+  ]
+}
+```
+
+---
+
+# 47. Explainability
+
+Every result should be explainable.
+
+For:
+
+```text
+HIPAA = LIKELY_APPLICABLE
+```
+
+the system should show:
+
+```text
+Why?
+
+Rule HIPAA-R001 evaluated TRUE.
+
+Inputs:
+
+data.phi = TRUE
+acts_on_behalf_of_customer = TRUE
+
+Derived concept:
+
+potential_business_associate_relationship = TRUE
+
+Source:
+
+HHS source reference
+
+Confidence:
+
+HIGH
+```
+
+This is more useful than simply showing:
+
+```text
+HIPAA = TRUE
+```
+
+---
+
+# 48. POC Phase A Success Criteria
+
+Phase A is successful if it can demonstrate:
+
+## Source
+
+* authoritative source family
+* source provenance
+* source relationships
+
+## Regulatory Knowledge
+
+* structured regulatory statements
+* definitions
+* scope
+* applicability concepts
+* obligations
+* exceptions
+
+## Signals
+
+* comprehensive internal signal universe
+* derived concepts
+* signal dependencies
+
+## Customer Experience
+
+* small number of high-value initial inputs
+* targeted questions
+* adaptive questions
+* no unnecessary questions
+
+## Assessment
+
+* customer input JSON
+* deterministic rule execution
+* applicability results
+* explanations
+* confidence
+* missing information
+
+## Requirements
+
+* applicability separated from requirements
+* requirements depend on customer context
+* requirement provenance
+* requirement-specific unknowns
+
+## Testing
+
+* positive scenario
+* negative scenario
+* UNKNOWN scenario
+* boundary cases
+* exception cases
+* adaptive question scenario
+* automated deterministic tests
+
+---
+
+# 49. What Phase A Does NOT Do
+
+Phase A does not:
+
+* determine legal compliance
+* provide legal advice
+* provide regulatory certification
+* map requirements to Walmart
+* claim Walmart satisfies HIPAA
+* determine technical architecture
+* automatically approve regulatory interpretation
+* replace legal/compliance review
+
+Phase A answers:
+
+> **What regulatory obligations appear relevant based on the information currently available?**
+
+---
+
+# 50. Phase B — Walmart Readiness
+
+Only after Phase A succeeds.
+
+Phase B answers:
+
+> Given the applicable regulatory requirements, how does the customer's Walmart usage intersect with those requirements?
+
+---
+
+# 51. Walmart Knowledge Must Be Separate
+
+Regulatory sources answer:
+
+```text
+What does HIPAA require?
+```
+
+Walmart sources answer:
+
+```text
+What does Walmart provide?
+```
+
+These are different claims and require independent provenance.
+
+Therefore:
+
+```text
+REGULATORY KNOWLEDGE
+    |
+    +-- HIPAA
+    +-- GDPR
+    +-- DORA
+    +-- ...
+
+WALMART KNOWLEDGE
+    |
+    +-- Products
+    +-- Services
+    +-- Capabilities
+    +-- Security
+    +-- Privacy
+    +-- Data Handling
+    +-- Compliance Programs
+    +-- Configuration
+    +-- Limitations
+```
+
+The mapping between these domains is a separate artifact.
+
+---
+
+# 52. Phase B — Walmart Source Registration
+
+Register authoritative Walmart sources relevant to the use case.
+
+Examples may include:
+
+* Walmart corporate compliance documentation
+* Walmart security documentation
+* Walmart privacy documentation
+* Walmart product/service documentation
+* Walmart data handling documentation
+* Walmart contractual documentation
+* Walmart regulatory/compliance documentation
+
+Prefer official Walmart sources for Walmart capability claims.
+
+The exact source set must be discovered and validated as part of Phase B.
+
+---
+
+# 53. Phase B — Walmart Knowledge Extraction
 
 Extract:
 
 ```text
 Product
+Service
 Capability
 Feature
 Configuration
 Availability
 Prerequisite
 Limitation
-Customer responsibility
-Compliance evidence
-Data handling
-Data residency
-Security properties
+Customer Responsibility
+Compliance Evidence
+Data Handling
+Security Properties
+Privacy Properties
 ```
 
-### Prompt
-
-```text
-You are an Atlassian product and capability knowledge extraction system.
-
-Using only the supplied authoritative Atlassian source, extract structured knowledge about:
-
-1. Product
-2. Capability
-3. Security capability
-4. Privacy capability
-5. Data handling
-6. Data residency
-7. Encryption
-8. Identity/access control
-9. Audit/logging
-10. Administrative controls
-11. Configuration requirements
-12. Availability restrictions
-13. Customer responsibilities
-14. Limitations
-15. Compliance evidence
-
-For each item provide:
-
-- id
-- product
-- capability
-- description
-- availability
-- prerequisites
-- limitations
-- customerResponsibility
-- sourceReference
-- confidence
-
-Do not claim that a capability satisfies a regulatory requirement.
-
-Only extract what the Atlassian source supports.
-
-Output JSON only.
-```
-
-Save:
-
-```text
-extracted/atlassian/capabilities.json
-```
+Do not determine regulatory applicability here.
 
 ---
 
-# 31. STEP 20 — Regulatory → Atlassian Capability Mapping
+# 54. Phase B — Walmart Usage Context
 
-This is the bridge between Layer 2 and Layer 3.
+The customer may use Walmart products/services in a way that makes a regulatory requirement relevant.
 
 Example:
 
 ```text
-HIPAA Requirement
-        |
-        v
-Security Requirement
-        |
-        v
-Relevant Atlassian Capability
-        |
-        v
-Coverage
+Customer:
+Indian SaaS company
+
+Customer:
+US healthcare organisation
+
+Data:
+PHI
+
+Walmart:
+Relevant Walmart service
+
+Use:
+Customer support / business operation
 ```
 
-The mapping should never say simply:
-
-```text
-HIPAA = Atlassian compliant
-```
-
-Instead:
+The assessment must be able to represent:
 
 ```json
 {
-  "mappingId": "HIPAA-ATL-001",
-  "regulatoryRequirementId": "HIPAA-REQ-001",
-  "atlassianProduct": "JIRA_CLOUD",
-  "capabilityId": "ATL-CAP-001",
-  "coverage": "PARTIALLY_SUPPORTED",
-  "configurationRequired": true,
-  "customerResponsibility": [
-    "..."
-  ],
-  "limitations": [
-    "..."
-  ],
-  "evidenceReferences": [
-    "ATL-SOURCE-001"
-  ],
-  "confidence": "MEDIUM"
+  "walmartUsage": {
+    "products": [
+      "WALMART_SERVICE"
+    ],
+    "useCases": [
+      "CUSTOMER_SUPPORT"
+    ],
+    "dataTypes": [
+      "PHI"
+    ],
+    "containsSensitiveData": true,
+    "processingRole": "PROCESSOR"
+  }
 }
 ```
 
-### Prompt
+The actual product/service names and values should be based on validated Walmart knowledge.
+
+---
+
+# 55. Phase B — Regulatory Requirement to Walmart Capability Mapping
+
+The mapping should look like:
 
 ```text
-Map approved regulatory requirements to Atlassian capabilities.
+Regulatory Requirement
+        |
+        v
+Customer Walmart Usage
+        |
+        v
+Walmart Product / Service
+        |
+        v
+Walmart Capability
+        |
+        v
+Coverage
+        |
+        v
+Configuration
+        |
+        v
+Customer Responsibility
+        |
+        v
+Evidence
+```
+
+Possible mapping results:
+
+```text
+FULLY_RELEVANT
+PARTIALLY_RELEVANT
+SUPPORTS_REQUIREMENT
+SUPPORTS_WITH_CONFIGURATION
+CUSTOMER_RESPONSIBILITY
+NOT_SUPPORTED
+NOT_APPLICABLE
+UNKNOWN_REQUIRES_VERIFICATION
+```
+
+Never output:
+
+```text
+Walmart is HIPAA compliant.
+```
+
+Instead output:
+
+```text
+Requirement X
+    |
+    +-- Walmart capability Y
+    +-- Supports requirement
+    +-- Configuration required
+    +-- Customer responsibility
+    +-- Evidence
+```
+
+---
+
+# 56. Phase B Mapping Prompt
+
+```text
+Map approved regulatory requirements to Walmart capabilities.
 
 Important:
 
-Do not claim that Atlassian satisfies a regulation in its entirety.
+Do not claim that Walmart satisfies a regulation in its entirety.
 
 Do not infer product capabilities from the regulation.
 
@@ -1873,8 +3365,8 @@ Do not infer regulatory compliance from a product feature.
 For each candidate mapping determine:
 
 1. Regulatory requirement
-2. Atlassian product
-3. Atlassian capability
+2. Walmart product/service
+3. Walmart capability
 4. Relationship
 5. Coverage
 6. Configuration required
@@ -1898,1012 +3390,664 @@ UNKNOWN_REQUIRES_VERIFICATION
 Every mapping requires:
 
 - regulatory source evidence
-- Atlassian source evidence
+- Walmart source evidence
 
 Output JSON only.
 ```
 
-Save:
+---
+
+# 57. Final Architecture
+
+The complete future architecture is:
 
 ```text
-extracted/atlassian/mappings/hipaa.json
+                         AUTHORITATIVE SOURCES
+                                  |
+                   +--------------+--------------+
+                   |                             |
+                   v                             v
+           REGULATORY SOURCES             WALMART SOURCES
+                   |                             |
+                   v                             v
+          REGULATORY KNOWLEDGE          WALMART KNOWLEDGE
+                   |
+                   v
+                SIGNALS
+                   |
+                   v
+          DERIVED CONCEPTS
+                   |
+                   v
+         APPLICABILITY RULES
+                   |
+                   v
+             REQUIREMENTS
+                   |
+                   v
+        HIGH-VALUE SIGNAL MODEL
+                   |
+                   v
+         ASSESSMENT PROFILE
+                   |
+                   v
+           CUSTOMER INPUT
+                   |
+                   v
+          SIGNAL RESOLUTION
+                   |
+                   v
+          DETERMINISTIC ENGINE
+                   |
+                   v
+       REGULATORY APPLICABILITY
+                   |
+                   v
+       REGULATORY REQUIREMENTS
+                   |
+                   +----------------------+
+                                          |
+                                          v
+                                  WALMART USAGE
+                                          |
+                                          v
+                               CAPABILITY MAPPING
+                                          |
+                                          v
+                                  READINESS / GAP
 ```
 
 ---
 
-# 32. Customer Atlassian Usage Context
+# 58. Final Knowledge Model
 
-Regulatory applicability should not assume that merely using Atlassian makes a law applicable.
-
-Instead, capture Atlassian usage as a separate context.
-
-Example:
-
-```json
-{
-  "atlassianUsage": {
-    "products": [
-      "JIRA_CLOUD"
-    ],
-    "useCases": [
-      "CUSTOMER_SUPPORT",
-      "INCIDENT_MANAGEMENT"
-    ],
-    "dataTypes": [
-      "PHI"
-    ],
-    "containsSensitiveData": true,
-    "dataSubjects": [
-      "CUSTOMER_USERS"
-    ],
-    "processingRole": "PROCESSOR"
-  }
-}
-```
-
-The usage context may itself contain signals.
-
-Examples:
+Keep these objects separate:
 
 ```text
-atlassian.product_used
-atlassian.jira_used
-atlassian.confluence_used
-atlassian.data_contains_phi
-atlassian.data_contains_personal_data
-atlassian.data_contains_financial_data
-atlassian.use_case
-atlassian.processing_role
-atlassian.data_residency_requirement
+Source
+   |
+   v
+Regulatory Statement
+   |
+   +---- Signal
+   |
+   +---- Derived Concept
+   |
+   +---- Rule
+   |
+   +---- Requirement
+   |
+   +---- Exception
+   |
+   +---- Evidence
+   |
+   +---- Question
+   |
+   v
+Assessment Profile
+   |
+   v
+Customer Input
+   |
+   v
+Assessment Result
 ```
 
-These should be included only when necessary for the relevant assessment.
+Later:
+
+```text
+Assessment Result
+       |
+       v
+Relevant Requirement
+       |
+       v
+Walmart Usage Context
+       |
+       v
+Walmart Capability
+       |
+       v
+Capability Mapping
+       |
+       v
+Readiness Result
+```
 
 ---
 
-# 33. Important Example: Indian SaaS Company
+# 59. Recommended Implementation Order
 
-Consider:
+Do not implement everything simultaneously.
 
-```text
-HQ:
-India
+## Milestone 1 — HIPAA Source Foundation
 
-Industry:
-SaaS
-
-Product:
-Jira Cloud
-
-Customer:
-US healthcare organisation
-
-Data:
-PHI
-
-Activity:
-Processes PHI on behalf of customer
-```
-
-A weak system might conclude:
+Implement:
 
 ```text
-India
-+
-Software
-=
-HIPAA not applicable
+Source Registration
+Source Discovery
+Source Understanding
 ```
 
-That is not sufficient.
-
-The assessment should reason:
+Output:
 
 ```text
-Organisation
-      |
-      +-- India
-      +-- SaaS
-      |
-      +-- Relationship with US healthcare organisation
-      |
-      +-- Processes PHI
-      |
-      +-- Acts on behalf of customer
-              |
-              v
-      HIPAA relevance
-              |
-              v
-      Business Associate context
-              |
-              v
-      Relevant requirements
-              |
-              v
-      Does Atlassian usage involve this data?
-              |
-              v
-      Jira Cloud
-              |
-              v
-      Atlassian capability mapping
+source-family.json
+source-understanding.json
 ```
-
-This is the scenario the POC must prove.
 
 ---
 
-# 34. STEP 21 — Execute Customer Assessment
+## Milestone 2 — HIPAA Regulatory Knowledge
 
-Customer input:
+Implement:
 
 ```text
-customer-input.json
+Knowledge Extraction
+Signal Discovery
+Derived Concepts
+Rule Generation
+Requirement Extraction
+Exception Extraction
 ```
 
-should be converted into signals.
-
-Architecture:
+Output:
 
 ```text
-Customer Answers
+knowledge.json
+signals.json
+derived-concepts.json
+rules.json
+requirements.json
+exceptions.json
+```
+
+---
+
+## Milestone 3 — Customer Assessment
+
+Implement:
+
+```text
+Evidence
+Questions
+High-Value Signal Selection
+Assessment Profile
+Customer Input Template
+```
+
+Output:
+
+```text
+evidence.json
+questions.json
+signal-dependencies.json
+assessment-profile.json
+customer-input-template.json
+```
+
+---
+
+## Milestone 4 — Deterministic Execution
+
+Use:
+
+```text
+Customer Input
        |
        v
 Signal Resolver
        |
        v
-Observable Signals
-       |
-       v
 Derived Concepts
        |
        v
-Rule Engine
+Java Rule Engine
        |
        v
 Applicability
+       |
+       v
+Requirements
 ```
 
-The AI should not execute the rules.
+Test:
 
-The Java rule engine should.
+```text
+Applicable
+Not Applicable
+Unknown
+Boundary
+Exception
+```
 
 ---
 
-# 35. STEP 22 — Adaptive Missing-Information Analysis
+## Milestone 5 — Adaptive Questions
 
-After every evaluation, determine:
-
-```text
-Which important rules are UNKNOWN?
-```
-
-Then:
+Implement:
 
 ```text
-Which missing signal would resolve the most important UNKNOWN rules?
-```
-
-Then select the next question.
-
-Example:
-
-```text
-Initial answers
+UNKNOWN rules
       |
       v
+Missing signals
+      |
+      v
+Highest-value question
+      |
+      v
+Customer answer
+      |
+      v
+Re-run assessment
+```
+
+---
+
+## Milestone 6 — Walmart
+
+Only after the above works:
+
+```text
+Walmart Sources
+      |
+      v
+Walmart Knowledge
+      |
+      v
+Walmart Usage
+      |
+      v
+Capability Mapping
+```
+
+---
+
+# 60. The First End-to-End Demo
+
+The first demo should be deliberately small.
+
+### Customer
+
+```text
+Country:
+India
+
+Industry:
+Software
+
+Organisation Type:
+SaaS Provider
+
+Serves US healthcare organisations:
+Yes
+
+Processes PHI:
+Yes
+
+Processes PHI on behalf of another organisation:
+Yes
+```
+
+### Engine
+
+```text
+HIPAA
+LIKELY_APPLICABLE
+```
+
+### Explanation
+
+```text
+The customer processes PHI on behalf of another organisation
+and serves a US healthcare-related customer context.
+
+Relevant regulatory concepts:
+- PHI
+- covered entity/customer relationship
+- acting on behalf of another organisation
+```
+
+### Requirements
+
+```text
+Business Associate-related requirements
+Security-related requirements
+Other applicable HIPAA requirements
+```
+
+### Missing Information
+
+```text
+None required for initial applicability.
+
+Additional information may be required for
+requirement-specific assessment.
+```
+
+Then run the same engine with:
+
+```text
+Processes PHI = FALSE
+```
+
+and demonstrate that the result changes.
+
+Then run:
+
+```text
+Processes PHI = UNKNOWN
+```
+
+and demonstrate:
+
+```text
 HIPAA = UNKNOWN
-      |
-      v
-Missing:
-data.phi
-relationship.on_behalf_of_customer
-      |
-      v
-Question:
-"Do your services create, receive, maintain or transmit
-PHI on behalf of another organisation?"
-      |
-      v
-Customer answers YES
-      |
-      v
-Re-run rules
 ```
 
-Stop asking questions when:
+with a targeted question generated.
 
-```text
-All material applicability rules resolved
-```
-
-or:
-
-```text
-Remaining unknowns cannot materially change the result
-```
-
-or:
-
-```text
-Required information is unavailable
-```
-
-The result should explicitly state which one occurred.
+That is the **core POC**.
 
 ---
 
-# 36. STEP 23 — Atlassian Readiness Assessment
+# 61. What Success Looks Like
 
-Once regulatory requirements are identified:
+The most important success criterion is not:
+
+> "Can AI generate a lot of JSON?"
+
+It is:
+
+> **Can AI generate a trustworthy regulatory knowledge package that produces a useful customer assessment with only a small number of high-value inputs?**
+
+The POC should demonstrate:
 
 ```text
-Applicable Requirements
+Large Regulatory Knowledge Model
+             |
+             v
+Small Customer Assessment
+             |
+             v
+Deterministic Result
+             |
+             v
+Explainable Regulatory Requirements
+```
+
+For example:
+
+```text
+100+ internal signals
         |
         v
-Customer Atlassian Usage
+10–15 high-value customer inputs
         |
         v
-Relevant Atlassian Mappings
+5–10 targeted questions
         |
         v
-Coverage Analysis
+Regulatory applicability
+        |
+        v
+Relevant requirements
 ```
 
-Example output:
+The exact numbers are not fixed targets.
 
-```json
-{
-  "framework": "HIPAA",
-  "regulatoryApplicability": {
-    "status": "LIKELY_APPLICABLE"
-  },
-  "requirements": [
-    {
-      "requirementId": "HIPAA-REQ-001",
-      "status": "RELEVANT",
-      "atlassianRelevance": "RELEVANT"
-    }
-  ],
-  "atlassianAssessment": [
-    {
-      "product": "JIRA_CLOUD",
-      "coverage": "SUPPORTS_WITH_CONFIGURATION",
-      "customerResponsibility": [
-        "..."
-      ],
-      "unknowns": [
-        "..."
-      ]
-    }
-  ]
-}
-```
+The principle is:
+
+> **Do not make the customer consume the complexity of the regulatory knowledge model.**
 
 ---
 
-# 37. STEP 24 — Final Pre-Sales Readiness Result
+# 62. Final Product Vision
 
-The final result should answer five questions.
+The long-term product should not ask customers:
 
-## 1. What regulations may apply?
+> "Which laws do you think apply to you?"
 
-```text
-HIPAA — Likely Applicable
-```
+It should ask a small number of factual questions.
 
-## 2. Why?
+For example:
 
 ```text
-Customer processes PHI on behalf of a US healthcare organisation.
-```
+Tell us about your organisation
+--------------------------------
 
-## 3. What requirements matter?
-
-```text
-Business Associate requirements
-Security requirements
-etc.
-```
-
-## 4. Does the customer's Atlassian usage intersect with them?
-
-```text
-Yes — Jira Cloud is used to process/store relevant customer data.
-```
-
-## 5. What does Atlassian provide?
-
-```text
-Capability
-Coverage
-Configuration
-Customer responsibility
-Unknowns
-Evidence
-```
-
----
-
-# 38. Final Assessment Output
-
-The final output should look conceptually like:
-
-```json
-{
-  "customer": {},
-  
-  "regulatoryAssessment": {
-    "framework": "HIPAA",
-    "status": "LIKELY_APPLICABLE",
-    "confidence": "HIGH",
-    "reasons": [],
-    "unknowns": []
-  },
-
-  "requirements": [
-    {
-      "requirementId": "",
-      "status": "RELEVANT",
-      "reason": "",
-      "sourceReferences": []
-    }
-  ],
-
-  "atlassianContext": {
-    "products": [],
-    "dataTypes": [],
-    "useCases": []
-  },
-
-  "atlassianAssessment": [
-    {
-      "product": "",
-      "capability": "",
-      "coverage": "",
-      "configurationRequired": false,
-      "customerResponsibility": [],
-      "limitations": [],
-      "evidenceReferences": []
-    }
-  ],
-
-  "missingInformation": [],
-
-  "recommendations": [],
-
-  "humanReviewRequired": true
-}
-```
-
----
-
-# 39. Assessment Status Model
-
-Do not force binary TRUE/FALSE outcomes.
-
-Use:
-
-```text
-APPLICABLE
-LIKELY_APPLICABLE
-POTENTIALLY_APPLICABLE
-NOT_CURRENTLY_INDICATED
-NOT_APPLICABLE
-UNKNOWN
-```
-
-For early assessment, prefer:
-
-```text
-LIKELY_APPLICABLE
-POTENTIALLY_APPLICABLE
-NOT_CURRENTLY_INDICATED
-UNKNOWN
-```
-
-This prevents false certainty.
-
----
-
-# 40. Confidence Model
-
-Confidence should not mean "AI confidence".
-
-It should represent evidence completeness.
-
-Example:
-
-```text
-HIGH
-
-All material applicability conditions have been resolved
-using reliable customer signals and authoritative rules.
-
-MEDIUM
-
-Core conditions are resolved but one or more important
-assumptions remain.
-
-LOW
-
-Important applicability conditions remain unknown.
-
-UNKNOWN
-
-The available customer information is insufficient.
-```
-
----
-
-# 41. High-Value Signal Philosophy
-
-The system may generate:
-
-```text
-100+ candidate signals
-```
-
-That is fine.
-
-The customer assessment might use:
-
-```text
-5–15 initial signals
-```
-
-Then:
-
-```text
-0–10 targeted follow-up questions
-```
-
-The goal is:
-
-> **Maximum regulatory discrimination with minimum customer effort.**
-
-A signal is high-value when it can materially change the assessment.
-
-Examples:
-
-### High-value
-
-```text
 Country
 Industry
 Organisation type
 Countries served
-Data types processed
-Whether PHI is processed
-Whether processing is on behalf of another organisation
-Whether regulated-sector customers are served
-Atlassian products used
-Sensitive data in Atlassian
-```
 
-### Usually lower-value for initial intake
 
-```text
-Detailed encryption algorithm
-Exact retention period
-Specific SIEM product
-Exact network architecture
-Detailed configuration
-Evidence documents
-```
+Tell us about your business
+--------------------------------
 
-Those can be deferred until a relevant requirement is identified.
-
----
-
-# 42. Initial vs Targeted Questions
-
-The system should not ask:
-
-```text
-50 questions upfront
-```
-
-Instead:
-
-```text
-INITIAL QUESTIONS
-        |
-        v
-REGULATORY CLASSIFICATION
-        |
-        v
-TARGETED QUESTIONS
-        |
-        v
-REQUIREMENT CLASSIFICATION
-        |
-        v
-ATLASSIAN QUESTIONS
-```
-
-This creates a progressive assessment.
-
----
-
-# 43. Example Assessment Profile
-
-A HIPAA profile might initially contain:
-
-```text
-Organisation
------------------------------
-Country
-Industry
-Organisation Type
-
-Regulatory Context
------------------------------
 Do you serve healthcare organisations?
 
 Do you process health information?
 
-Do you process PHI on behalf of another organisation?
+Do you process information on behalf of another organisation?
 
-Do your services create, receive, maintain or transmit PHI?
+Do you provide services to regulated organisations?
 
-Atlassian Context
------------------------------
-Which Atlassian products are used?
 
-Is regulated/sensitive data stored or processed
-in those products?
+Assessment
+--------------------------------
+
+HIPAA
+Likely Applicable
+
+Why:
+...
+
+Requirements:
+...
+
+Missing information:
+...
 ```
 
-Not every question needs to appear immediately.
+The complexity remains inside the regulatory knowledge engine.
 
 ---
 
-# 44. Assessment Profile Must Drive the UI
+# 63. Final Architectural Principle
 
-The future UI should not have HIPAA-specific hard-coded forms.
-
-Instead:
+The system should ultimately follow:
 
 ```text
-assessment-profile.json
-          |
-          v
-      UI Renderer
-          |
-          v
-      Questionnaire
-```
-
-The UI should read:
-
-```text
-question
-answerType
-options
-required
-conditionalOn
-section
-helpText
-```
-
-Example:
-
-```json
-{
-  "questionId": "HIPAA-Q003",
-  "question": "Do your services process PHI?",
-  "answerType": "BOOLEAN",
-  "required": false,
-  "conditionalOn": {
-    "questionId": "HIPAA-Q001",
-    "equals": true
-  }
-}
-```
-
-This makes the questionnaire dynamically generated.
-
----
-
-# 45. Automated Testing
-
-The same assessment profile should generate test input.
-
-Example:
-
-```text
-assessment-profile.json
-        |
-        +----> UI
-        |
-        +----> Test Generator
-        |
-        +----> Customer Input JSON
-```
-
-Then:
-
-```text
-Customer Input
+CUSTOMER FACTS
       |
       v
-Java Rule Engine
+REGULATORY CONCEPTS
       |
       v
-Expected Result
+REGULATORY APPLICABILITY
+      |
+      v
+REGULATORY REQUIREMENTS
+      |
+      v
+WALMART USAGE
+      |
+      v
+WALMART CAPABILITIES
+      |
+      v
+READINESS / GAP ANALYSIS
 ```
 
-The test scenarios should contain:
+And never collapse these layers.
 
-```json
-{
-  "scenarioId": "HIPAA-001",
-  "description": "US healthcare-related SaaS provider processing PHI",
-  "input": {},
-  "expected": {
-    "HIPAA": "LIKELY_APPLICABLE"
-  }
-}
-```
+The core principle is:
+
+> **Facts are collected from customers.**
+>
+> **Regulatory conclusions are derived by approved rules.**
+>
+> **Requirements are derived from applicable regulatory context.**
+>
+> **Walmart capabilities are mapped separately using Walmart evidence.**
+>
+> **Every important conclusion remains traceable to its source and inputs.**
 
 ---
 
-# 46. POC Success Criteria
+# 64. POC Completion Checklist
 
-The POC is successful if it can demonstrate all of the following.
+## Phase A — Regulatory Assessment
 
-## Regulatory Knowledge
+### Sources
 
-* [ ] Starts from an authoritative source family.
-* [ ] Identifies relevant sub-sources.
-* [ ] Extracts structured regulatory knowledge.
-* [ ] Preserves provenance.
-* [ ] Preserves exceptions.
-* [ ] Distinguishes explicit statements from inference.
+* [ ] HIPAA source family registered
+* [ ] HHS root source registered
+* [ ] Relevant child sources discovered
+* [ ] Source authority classified
+* [ ] Source provenance captured
 
-## Signals
+### Knowledge
 
-* [ ] Generates comprehensive candidate signals.
-* [ ] Separates raw signals from derived concepts.
-* [ ] Identifies signal dependencies.
-* [ ] Selects a small high-value initial signal set.
+* [ ] Source understanding generated
+* [ ] Regulatory statements extracted
+* [ ] Definitions extracted
+* [ ] Scope extracted
+* [ ] Applicability concepts extracted
+* [ ] Exceptions extracted
+* [ ] Requirements extracted
 
-## Assessment
+### Signals
 
-* [ ] Generates an assessment profile.
-* [ ] Profile can drive a future UI.
-* [ ] Profile can generate customer input JSON.
-* [ ] Customer input can be passed to the deterministic rule engine.
-* [ ] UNKNOWN is preserved.
-* [ ] Missing information is identified.
-* [ ] Questions can be asked adaptively.
+* [ ] Candidate signal universe generated
+* [ ] Signal classifications generated
+* [ ] Derived concepts generated
+* [ ] Signal dependencies generated
 
-## Regulatory Requirements
+### Customer Assessment
 
-* [ ] Applicability is separate from requirements.
-* [ ] Customer role is considered.
-* [ ] Customer activities are considered.
-* [ ] Customer relationships are considered.
-* [ ] Data context is considered.
+* [ ] Questions generated
+* [ ] High-value signals selected
+* [ ] Tier 1 / Tier 2 / Tier 3 / Tier 4 classification created
+* [ ] Assessment profile generated
+* [ ] Customer input template generated
+* [ ] UNKNOWN supported
+* [ ] Conditional questions supported
+* [ ] UI-compatible schema created
 
-## Atlassian
+### Execution
 
-* [ ] Atlassian knowledge is separately sourced.
-* [ ] Atlassian capabilities have provenance.
-* [ ] Regulatory requirements can be mapped to capabilities.
-* [ ] Mapping does not claim complete regulatory compliance.
-* [ ] Configuration requirements are represented.
-* [ ] Customer responsibilities are represented.
-* [ ] Limitations are represented.
-* [ ] Unknowns are represented.
+* [ ] Customer input resolves to signals
+* [ ] Derived concepts resolve deterministically
+* [ ] Rules execute deterministically
+* [ ] Applicability result generated
+* [ ] Requirements generated
+* [ ] Missing information generated
+* [ ] Explanation generated
+* [ ] Confidence generated
 
-## End-to-End
+### Testing
 
-The following scenario must work:
+* [ ] Positive scenario
+* [ ] Negative scenario
+* [ ] UNKNOWN scenario
+* [ ] Boundary scenario
+* [ ] Exception scenario
+* [ ] Adaptive question scenario
+* [ ] Automated rule-engine tests
+
+---
+
+## Phase B — Walmart Readiness
+
+* [ ] Walmart sources registered
+* [ ] Walmart knowledge extracted
+* [ ] Products/services modeled
+* [ ] Capabilities modeled
+* [ ] Limitations modeled
+* [ ] Customer responsibility modeled
+* [ ] Walmart usage signals modeled
+* [ ] Regulatory requirements mapped to capabilities
+* [ ] Coverage generated
+* [ ] Configuration requirements generated
+* [ ] Evidence attached
+* [ ] Gaps generated
+
+---
+
+# 65. Final Definition
+
+The POC is complete when the following flow works end-to-end:
 
 ```text
-Indian SaaS company
-        +
-US healthcare customer
-        +
-Processes PHI
-        +
-Uses Jira Cloud
-        |
-        v
-HIPAA potentially/likely applicable
-        |
-        v
-Relevant HIPAA requirements
-        |
-        v
-Jira Cloud usage relevant
-        |
-        v
-Atlassian capability mapping
-        |
-        v
-Coverage / configuration / responsibility / gaps
-```
-
----
-
-# 47. AI Guardrails
-
-The following rules are mandatory.
-
-## Never:
-
-* invent regulatory requirements
-* invent legal conclusions
-* invent source references
-* treat guidance as law without qualification
-* assume industry alone determines applicability
-* assume geography alone determines applicability
-* treat UNKNOWN as FALSE
-* claim Atlassian compliance based only on a feature
-* claim that one product satisfies an entire regulation
-* infer unsupported Atlassian capabilities
-* ask customers to determine their own legal status
-* remove exceptions for simplicity
-
-## Always:
-
-* preserve provenance
-* preserve uncertainty
-* distinguish fact from inference
-* distinguish law/regulation/guidance/standard
-* distinguish applicability from requirements
-* distinguish requirements from controls
-* distinguish regulatory controls from Atlassian capabilities
-* preserve customer responsibility
-* preserve limitations
-* require human approval for generated knowledge
-
----
-
-# 48. Recommended Artifact Relationships
-
-The final knowledge graph should conceptually look like:
-
-```text
-SOURCE
-  |
-  v
-REGULATORY STATEMENT
-  |
-  +----------------+
-  |                |
-  v                v
-SIGNAL          REQUIREMENT
-  |
-  v
-DERIVED CONCEPT
-  |
-  v
-APPLICABILITY RULE
-  |
-  v
-ASSESSMENT PROFILE
-  |
-  v
-CUSTOMER INPUT
-  |
-  v
-ASSESSMENT RESULT
-  |
-  v
-RELEVANT REQUIREMENT
-  |
-  v
-ATLASSIAN USAGE
-  |
-  v
-ATLASSIAN CAPABILITY
-  |
-  v
-MAPPING
-  |
-  v
-COVERAGE / GAP
-```
-
----
-
-# 49. The Most Important Architectural Separation
-
-Keep these concepts separate:
-
-```text
-CUSTOMER FACT
-
-Example:
-"Customer processes PHI."
-
-            ↓
-
-DERIVED CONCEPT
-
-Example:
-"Potential business associate context."
-
-            ↓
-
-APPLICABILITY
-
-Example:
-"HIPAA likely applies."
-
-            ↓
-
-REQUIREMENT
-
-Example:
-"Business associate requirements are relevant."
-
-            ↓
-
-ATLASSIAN CONTEXT
-
-Example:
-"PHI may be processed in Jira Cloud."
-
-            ↓
-
-ATLASSIAN CAPABILITY
-
-Example:
-"Capability X supports part of the requirement."
-
-            ↓
-
-READINESS
-
-Example:
-"Supported with configuration; customer responsibility remains."
-```
-
-Do not collapse these into one object.
-
----
-
-# 50. Recommended Implementation Order
-
-Do not implement all artifacts at once.
-
-Implement in this order:
-
-```text
-PHASE 1
-Source Family
-    |
-    v
-Source Understanding
-    |
-    v
-Knowledge Extraction
-
-PHASE 2
-Signals
-    |
-    v
-Derived Concepts
-    |
-    v
-Rules
-
-PHASE 3
-Requirements
-    |
-    v
-Questions
-    |
-    v
-High-Value Signal Selection
-    |
-    v
-Assessment Profile
-
-PHASE 4
-Customer Input
-    |
-    v
-Java Rule Engine
-    |
-    v
-Test Scenarios
-
-PHASE 5
-Atlassian Sources
-    |
-    v
-Atlassian Capabilities
-    |
-    v
-Regulatory → Atlassian Mapping
-
-PHASE 6
-End-to-End Assessment
-    |
-    v
-Regulatory Applicability
-    |
-    v
-Requirements
-    |
-    v
-Atlassian Readiness
-```
-
----
-
-# 51. Final POC Definition
-
-The POC should ultimately demonstrate:
-
-```text
-                AUTHORITATIVE SOURCES
-                         |
-             +-----------+-----------+
-             |                       |
-             v                       v
-       REGULATORY SOURCES     ATLASSIAN SOURCES
-             |                       |
-             v                       v
-     REGULATORY KNOWLEDGE     ATLASSIAN KNOWLEDGE
-             |                       |
-             v                       |
-          SIGNALS                     |
-             |                       |
-             v                       |
-      DERIVED CONCEPTS               |
-             |                       |
-             v                       |
-           RULES                     |
-             |                       |
-             v                       |
-      REQUIREMENTS                   |
-             |                       |
-             +-----------+-----------+
-                         |
-                         v
-                 ASSESSMENT PROFILE
-                         |
-                         v
-                 CUSTOMER QUESTIONS
-                         |
-                         v
-                  CUSTOMER INPUT
-                         |
-                         v
-                DETERMINISTIC ENGINE
-                         |
-                         v
+                    AUTHORITATIVE SOURCE
+                            |
+                            v
+                    SOURCE FAMILY
+                            |
+                            v
+                 REGULATORY KNOWLEDGE
+                            |
+                            v
+                        SIGNALS
+                            |
+                            v
+                   DERIVED CONCEPTS
+                            |
+                            v
+                  APPLICABILITY RULES
+                            |
+                            v
+                    REQUIREMENTS
+                            |
+                            v
+                HIGH-VALUE SIGNALS
+                            |
+                            v
+                  ASSESSMENT PROFILE
+                            |
+                            v
+                   CUSTOMER INPUT
+                            |
+                            v
+                   SIGNAL RESOLVER
+                            |
+                            v
+                    RULE ENGINE
+                            |
+                            v
               REGULATORY APPLICABILITY
-                         |
-                         v
-                RELEVANT REQUIREMENTS
-                         |
-                         +----------------+
-                                          |
-                                          v
-                                ATLASSIAN USAGE
-                                          |
-                                          v
-                              CAPABILITY MAPPING
-                                          |
-                                          v
-                                  READINESS RESULT
+                            |
+                            v
+               REGULATORY REQUIREMENTS
+                            |
+                            v
+                 MISSING INFORMATION
 ```
 
-The final product is therefore not:
+Then, and only then:
 
-> "Is this customer HIPAA compliant?"
+```text
+              REGULATORY REQUIREMENTS
+                            |
+                            v
+                   WALMART USAGE
+                            |
+                            v
+                  WALMART KNOWLEDGE
+                            |
+                            v
+                 CAPABILITY MAPPING
+                            |
+                            v
+                 READINESS / GAPS
+```
 
-It is:
+The first POC therefore proves **Regulatory Assessment**.
 
-> **"Based on the customer's organisation, relationships, activities, data and Atlassian usage, which regulatory frameworks and requirements appear relevant, what information is still missing, and how does Atlassian map to those requirements?"**
+The second POC proves **Walmart Readiness**.
 
-That is the POC worth building.
+Together they form the foundation for a reusable **Regulatory & Walmart Readiness Assistant**.
