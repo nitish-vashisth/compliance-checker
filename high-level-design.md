@@ -1286,4 +1286,1278 @@ REQUIREMENTS INTELLIGENCE PLATFORM
 │   ├── StateRAMP
 │   ├── CJIS
 │   ├── DoD Impact Levels
+│   └── IRAP
+│
+├── E. Critical Infrastructure
+│   └── NIS2
+│
+├── F. Data Location & Sovereignty
+│   ├── Data Residency
+│   ├── Data Sovereignty
+│   └── Export Controls
+│
+├── G. AI Governance
+│   ├── EU AI Act
+│   └── Enterprise AI Governance
+│
+├── H. National / Sector Cloud Assurance
+│   ├── C5
+│   ├── TISAX
+│   ├── BSI IT-Grundschutz
+│   └── Other national schemes
+│
+├── I. Security Assurance
+│   ├── ISO 27001
+│   ├── SOC 2
+│   └── CSA STAR
+│
+├── J. Network & Connectivity
+│   ├── IP Allowlisting
+│   ├── Egress Control
+│   └── Private Connectivity
+│
+├── K. Monitoring & Audit
+│   ├── Audit Logging
+│   └── SIEM Integration
+│
+├── L. Encryption & Key Management
+│   ├── Encryption
+│   ├── CMK
+│   └── HSM / XKS
+│
+├── M. Identity & Access
+│   ├── SSO
+│   ├── SCIM
+│   └── RBAC
+│
+├── N. Data Protection Controls
+│   ├── Data Classification
+│   └── DLP
+│
+├── O. Security Assessment
+│   ├── Penetration Testing
+│   ├── Vulnerability Scanning
+│   └── Security Questionnaires
+│
+└── P. Migration Governance
+    ├── Legal / InfoSec / CAB
+    └── Multi-Org Governance
 ```
+
+---
+
+# 7. Generic Requirement Pack
+
+The core engine should not care whether the requirement pack is HIPAA, GDPR, FedRAMP, CMK, or CAB Review.
+
+Every requirement pack should follow a common structure.
+
+```text
+Requirement Pack
+│
+├── Metadata
+│
+├── Requirement Type
+│
+├── Applicability Signals
+│
+├── Derived Concepts
+│
+├── Rules
+│
+├── Evidence
+│
+├── Unknowns
+│
+├── Questions
+│
+├── Sources
+│
+├── Requirements / Obligations
+│
+├── Capability Mappings
+│
+└── Tests
+```
+
+---
+
+## 7.1 Requirement Type Examples
+
+| Requirement    | Type                                               |
+| -------------- | -------------------------------------------------- |
+| HIPAA          | `LAW` / `REGULATORY_FRAMEWORK`                     |
+| GDPR           | `LAW`                                              |
+| DORA           | `REGULATION`                                       |
+| FedRAMP        | `AUTHORISATION`                                    |
+| PCI DSS        | `STANDARD`                                         |
+| ISO 27001      | `STANDARD`                                         |
+| SOC 2          | `CUSTOMER_REQUIREMENT` / `ASSURANCE`               |
+| CMK            | `TECHNICAL_REQUIREMENT`                            |
+| Data Residency | `TECHNICAL_REQUIREMENT` / `REGULATORY_CONSEQUENCE` |
+| CAB Review     | `PROCESS_RISK`                                     |
+
+The exact classification can evolve as the ontology matures.
+
+The important principle is that the engine must not assume every requirement is a law.
+
+---
+
+# 8. Assessment Model
+
+The system must **never force a Yes / No answer**.
+
+Every assessment should support uncertainty.
+
+## 8.1 Assessment Status
+
+| Status                     | Meaning                                                      |
+| -------------------------- | ------------------------------------------------------------ |
+| `LIKELY_APPLICABLE`        | Available evidence strongly indicates applicability          |
+| `POTENTIALLY_APPLICABLE`   | Some signals indicate relevance, but evidence is incomplete  |
+| `NOT_CURRENTLY_INDICATED`  | Available evidence does not currently indicate applicability |
+| `INSUFFICIENT_INFORMATION` | Important information is missing                             |
+| `MANUAL_REVIEW_REQUIRED`   | Human legal/compliance validation is required                |
+| `OUT_OF_SCOPE`             | Requirement is not relevant to the assessed scenario         |
+
+---
+
+## 8.2 Example
+
+### DORA
+
+```text
+Status:
+MANUAL_REVIEW_REQUIRED
+
+Reason:
+The organisation appears to operate in financial services,
+but the available information is insufficient to determine
+whether it falls within the relevant entity category.
+```
+
+### What is known
+
+```text
+✓ EU operations
+✓ Financial services customer
+```
+
+### What is missing
+
+```text
+? Legal entity classification
+? Regulated activity
+? Supervisory authority
+```
+
+### Source
+
+```text
+[Authoritative regulatory reference]
+```
+
+### Recommended action
+
+```text
+Validate with customer's compliance/legal team.
+```
+
+This is safer than:
+
+```text
+DORA = YES
+```
+
+---
+
+# 9. Detection vs Determination
+
+The product should explicitly distinguish between **Detection** and **Determination**.
+
+This is one of the most important concepts in the system.
+
+---
+
+## 9.1 Level 1 — Detection
+
+The system says:
+
+> We detected signals that this may be relevant.
+
+Example:
+
+```text
+Potential DORA relevance detected.
+```
+
+This means the engine has identified relevant signals, but does not necessarily have enough information to conclude applicability.
+
+---
+
+## 9.2 Level 2 — Determination
+
+Only when sufficient evidence exists should the system produce a stronger conclusion.
+
+Example:
+
+```text
+DORA applicability strongly indicated.
+```
+
+For complex cases:
+
+```text
+Legal / compliance verification required.
+```
+
+This prevents the product from pretending to provide definitive legal advice.
+
+---
+
+# 10. Recommended Implementation Plan
+
+We should not start by implementing 30+ requirement packs.
+
+Instead, the platform should be built iteratively.
+
+---
+
+## Phase 0 — Build the Generic Foundation
+
+Before adding many themes, implement:
+
+1. Signal ontology
+2. Requirement Pack schema
+3. Source model
+4. Evidence model
+5. Rule model
+6. Three-valued logic
+7. Derived concept engine
+8. Confidence model
+9. Missing-information detection
+10. Question prioritisation
+11. Versioning
+12. Regression testing
+13. Assessment reproducibility
+
+This is the actual platform foundation.
+
+---
+
+# Phase 1 — HIPAA
+
+HIPAA becomes the reference implementation.
+
+Implement the complete flow:
+
+```text
+Signals
+   ↓
+Derived Concepts
+   ↓
+Rules
+   ↓
+Evidence
+   ↓
+Confidence
+   ↓
+Missing Signals
+   ↓
+Targeted Questions
+   ↓
+Final Assessment
+   ↓
+Atlassian Capability Mapping
+```
+
+This proves that the generic architecture works end-to-end.
+
+---
+
+# Phase 2 — One Requirement from Each Category
+
+Instead of immediately adding multiple privacy laws, validate the generic architecture against different requirement types.
+
+Recommended sequence:
+
+| Category                 | Requirement                  |
+| ------------------------ | ---------------------------- |
+| Law                      | GDPR                         |
+| Government Authorisation | FedRAMP                      |
+| Industry Regulation      | DORA                         |
+| Technical Requirement    | Data Residency               |
+| Security Standard        | PCI DSS                      |
+| Process Blocker          | Legal / InfoSec / CAB Review |
+
+After these six, evaluate whether the architecture is genuinely generic.
+
+---
+
+# Phase 3 — Build Shared Signal Domains
+
+Once the initial requirement packs work, create reusable signal domains.
+
+Recommended domains:
+
+```text
+organisation-signals
+jurisdiction-signals
+industry-signals
+customer-signals
+data-signals
+processing-signals
+government-signals
+security-signals
+identity-signals
+network-signals
+data-location-signals
+ai-signals
+governance-signals
+```
+
+Future requirement packs should reuse these domains rather than creating duplicate signals.
+
+---
+
+# Phase 4 — Expand by Shared Domain
+
+Recommended expansion order:
+
+## Privacy
+
+* GDPR
+* DPDP
+* CCPA / CPRA
+* LGPD
+* PIPL
+* APPI
+* PDPA
+* PIPA
+* POPIA
+
+## Government
+
+* FedRAMP
+* StateRAMP
+* CJIS
+* DoD IL
+* IRAP
+
+## Financial
+
+* DORA
+* PCI DSS
+
+## Critical Infrastructure
+
+* NIS2
+
+## Cloud Assurance
+
+* C5
+* TISAX
+
+## Architecture
+
+* Data Residency
+* Data Sovereignty
+* CMK
+* IP Allowlisting
+* Private Connectivity
+
+## Security Operations
+
+* Audit Logging
+* SIEM
+* Penetration Testing
+* Vulnerability Management
+* DLP
+* Data Classification
+
+## Identity
+
+* SSO
+* SCIM
+* RBAC
+
+## Governance
+
+* Legal Review
+* InfoSec Review
+* CAB
+* Multi-Org Governance
+
+---
+
+# 11. Iterative Workflow for Every Requirement Pack
+
+Every requirement pack should follow the same workflow.
+
+---
+
+## Step 1 — Define the Requirement
+
+Example:
+
+```text
+Theme:
+DORA
+
+Type:
+LAW / REGULATION
+
+Jurisdiction:
+European Union
+
+Primary Authority:
+[Official authority]
+
+Purpose:
+Digital operational resilience for financial entities.
+```
+
+---
+
+# Step 2 — Break It Into Sub-Concepts
+
+For DORA:
+
+```text
+financial_entity
+eu_jurisdiction
+ict_service_dependency
+third_party_ict_provider
+operational_resilience
+incident_management
+resilience_testing
+third_party_risk
+```
+
+---
+
+# Step 3 — Identify Authoritative Sources
+
+Every concept and rule must be linked to:
+
+* Primary source
+* Official guidance
+* Relevant article / section
+* Effective date
+* Last reviewed date
+
+Example:
+
+```text
+Source
+├── authority
+├── title
+├── URL
+├── article / section
+├── effectiveDate
+├── retrievedDate
+└── lastReviewedDate
+```
+
+The system should prefer authoritative sources over secondary sources.
+
+---
+
+# Step 4 — Identify Signals
+
+Example DORA signals:
+
+* Headquarters country
+* Operating countries
+* Industry
+* Sub-industry
+* Financial licence
+* Financial regulator
+* Customer types
+* ICT dependency
+* Atlassian usage
+
+---
+
+# Step 5 — Classify Signals by Collection Stage
+
+Signals should be collected progressively.
+
+| Stage   | Description                     |
+| ------- | ------------------------------- |
+| Phase 0 | Automatically available         |
+| Phase 1 | Low-friction customer signals   |
+| Phase 2 | Usage / architecture signals    |
+| Phase 3 | Targeted verification questions |
+| Phase 4 | Manual expert review            |
+
+The goal is to avoid asking customers a huge questionnaire upfront.
+
+---
+
+# Step 6 — Define Derived Concepts
+
+Example:
+
+```text
+eu_financial_entity_candidate
+regulated_financial_activity_candidate
+dora_scope_candidate
+```
+
+Derived concepts are intermediate conclusions produced from raw signals.
+
+---
+
+# Step 7 — Create Applicability Rules
+
+Rules should use:
+
+```text
+TRUE
+FALSE
+UNKNOWN
+```
+
+rather than simple Boolean classification.
+
+Example:
+
+```text
+IF
+    customer_operates_in_eu = TRUE
+AND
+    financial_services = TRUE
+AND
+    regulated_entity = UNKNOWN
+
+THEN
+
+    dora_scope_candidate = UNKNOWN
+```
+
+This preserves uncertainty.
+
+---
+
+# Step 8 — Define Confidence
+
+Example:
+
+| Confidence | Evidence                                           |
+| ---------- | -------------------------------------------------- |
+| High       | Customer-confirmed regulated entity                |
+| Medium     | Industry and geography strongly indicate relevance |
+| Low        | Public information only                            |
+
+Confidence should be tied to evidence rather than simply assigned by the rule.
+
+---
+
+# Step 9 — Define Targeted Questions
+
+Only ask questions that can materially change the result.
+
+For example:
+
+```text
+Does the organisation hold a financial services licence
+or operate under a financial supervisory authority?
+```
+
+is more valuable than asking a generic:
+
+```text
+Are you regulated?
+```
+
+The question engine should prioritize questions based on their ability to reduce uncertainty.
+
+---
+
+# Step 10 — Define Obligations
+
+Separate:
+
+```text
+Applicability
+```
+
+from:
+
+```text
+What becomes important if applicable?
+```
+
+For example:
+
+```text
+DORA
+    ↓
+Applicability
+    ↓
+ICT third-party risk
+    ↓
+Operational resilience
+    ↓
+Incident management
+    ↓
+Testing
+```
+
+This distinction prevents the engine from confusing applicability with downstream obligations.
+
+---
+
+# Step 11 — Map to Atlassian Capability
+
+Each requirement should eventually map to an Atlassian capability assessment.
+
+Supported outcomes:
+
+```text
+SUPPORTED
+SUPPORTED_WITH_CONFIGURATION
+SUPPORTED_WITH_CONTRACT
+PARTIALLY_SUPPORTED
+NOT_SUPPORTED
+ROADMAP
+UNKNOWN
+MANUAL_VERIFICATION_REQUIRED
+```
+
+Example:
+
+```text
+Requirement
+    ↓
+Atlassian Capability
+    ↓
+Capability Status
+    ↓
+Migration Impact
+```
+
+---
+
+# Step 12 — Create Regression Tests
+
+Every requirement pack must include:
+
+* Positive cases
+* Negative cases
+* Unknown cases
+* Edge cases
+* Conflicting evidence
+* Historical version tests
+
+Example:
+
+```text
+Test Case
+├── Input Signals
+├── Expected Derived Concepts
+├── Expected Rule Results
+├── Expected Assessment
+├── Expected Confidence
+└── Expected Missing Information
+```
+
+This is essential because regulatory logic will evolve over time.
+
+---
+
+# 12. Proposed Repository Structure
+
+The project should eventually move toward a structure similar to:
+
+```text
+requirements-intelligence/
+│
+├── README.md
+│
+├── docs/
+│   ├── architecture.md
+│   ├── signal-ontology.md
+│   ├── rule-engine.md
+│   ├── evidence-model.md
+│   ├── source-management.md
+│   ├── question-engine.md
+│   ├── confidence-model.md
+│   ├── capability-mapping.md
+│   └── roadmap.md
+│
+├── core/
+│   │
+│   ├── schemas/
+│   │   ├── signal.schema.json
+│   │   ├── requirement-pack.schema.json
+│   │   ├── rule.schema.json
+│   │   ├── evidence.schema.json
+│   │   └── assessment.schema.json
+│   │
+│   ├── ontology/
+│   │   ├── organisation.json
+│   │   ├── jurisdiction.json
+│   │   ├── industry.json
+│   │   ├── customer.json
+│   │   ├── data.json
+│   │   ├── processing.json
+│   │   └── security.json
+│   │
+│   └── engine/
+│
+├── packs/
+│   │
+│   ├── privacy/
+│   │   ├── gdpr/
+│   │   ├── dpdp/
+│   │   ├── ccpa-cpra/
+│   │   ├── lgpd/
+│   │   ├── pipl/
+│   │   ├── appi/
+│   │   ├── pdpa/
+│   │   ├── pipa/
+│   │   └── popia/
+│   │
+│   ├── healthcare/
+│   │   ├── hipaa/
+│   │   └── hitrust/
+│   │
+│   ├── government/
+│   │   ├── fedramp/
+│   │   ├── stateramp/
+│   │   ├── cjis/
+│   │   ├── dod-il/
+│   │   └── irap/
+│   │
+│   ├── financial/
+│   │   ├── dora/
+│   │   └── pci-dss/
+│   │
+│   ├── critical-infrastructure/
+│   │   └── nis2/
+│   │
+│   ├── data/
+│   │   ├── data-residency/
+│   │   ├── data-sovereignty/
+│   │   └── export-controls/
+│   │
+│   ├── ai/
+│   │   ├── eu-ai-act/
+│   │   └── enterprise-ai-governance/
+│   │
+│   ├── assurance/
+│   │   ├── iso27001/
+│   │   ├── soc2/
+│   │   ├── c5/
+│   │   └── tisax/
+│   │
+│   ├── architecture/
+│   │   ├── cmk/
+│   │   ├── ip-allowlisting/
+│   │   ├── egress/
+│   │   └── private-connectivity/
+│   │
+│   ├── identity/
+│   │   ├── sso/
+│   │   ├── scim/
+│   │   └── rbac/
+│   │
+│   └── governance/
+│       ├── legal-review/
+│       ├── infosec-review/
+│       ├── cab/
+│       └── tenant-governance/
+│
+├── sources/
+│
+├── registry/
+│
+├── capabilities/
+│   └── atlassian/
+│
+└── tests/
+```
+
+---
+
+# 13. Recommended First Six Iterations
+
+To prove that the platform works across different requirement types, use the following order.
+
+| Iteration | Requirement                            | Why                                                     |
+| --------- | -------------------------------------- | ------------------------------------------------------- |
+| 1         | HIPAA                                  | Complex applicability based on data + relationship      |
+| 2         | GDPR                                   | Privacy law with jurisdiction + processing logic        |
+| 3         | FedRAMP                                | Government / customer-driven authorisation              |
+| 4         | DORA                                   | Industry + jurisdiction + legal entity logic            |
+| 5         | Data Residency                         | Requirement can originate from law, contract, or policy |
+| 6         | IP Allowlisting / Private Connectivity | Pure technical requirement detection                    |
+
+After these six iterations, stop and evaluate the architecture.
+
+The core question is:
+
+> Does the same generic model work across all six requirement types?
+
+The expected common flow is:
+
+```text
+Signals
+   ↓
+Concepts
+   ↓
+Rules
+   ↓
+Evidence
+   ↓
+Questions
+   ↓
+Assessment
+   ↓
+Capability
+```
+
+If the same model works across all six, the generic platform architecture has been validated.
+
+After that, adding the remaining requirements should become primarily a **knowledge-pack development problem**, rather than a platform-development problem.
+
+---
+
+# 14. Key Design Principles
+
+## 14.1 Evidence Over Assumptions
+
+The system should never claim something that the available evidence does not support.
+
+```text
+Evidence
+   ↓
+Inference
+   ↓
+Assessment
+```
+
+not:
+
+```text
+Guess
+   ↓
+YES / NO
+```
+
+---
+
+## 14.2 Never Force Yes / No
+
+Every result must be able to express uncertainty.
+
+Supported states include:
+
+```text
+LIKELY_APPLICABLE
+POTENTIALLY_APPLICABLE
+NOT_CURRENTLY_INDICATED
+INSUFFICIENT_INFORMATION
+MANUAL_REVIEW_REQUIRED
+OUT_OF_SCOPE
+```
+
+---
+
+## 14.3 Detection Is Not Determination
+
+The system may detect:
+
+```text
+Potential DORA relevance
+```
+
+without determining:
+
+```text
+DORA definitely applies
+```
+
+The distinction must be explicit in both the domain model and UI.
+
+---
+
+## 14.4 Separate Applicability from Obligations
+
+The engine should first determine:
+
+```text
+Does this requirement potentially apply?
+```
+
+Then:
+
+```text
+What obligations or controls become relevant?
+```
+
+These are separate questions.
+
+---
+
+## 14.5 Separate Law from Standard from Customer Requirement
+
+The system should never treat all compliance requirements as laws.
+
+For example:
+
+```text
+HIPAA
+    → Legal / regulatory framework
+
+ISO 27001
+    → Security standard / assurance
+
+SOC 2
+    → Assurance / customer requirement
+
+FedRAMP
+    → Government authorisation
+
+CMK
+    → Technical requirement
+
+CAB Review
+    → Migration process risk
+```
+
+This distinction is fundamental to the architecture.
+
+---
+
+## 14.6 Reuse Signals
+
+Do not build independent questionnaires for every requirement.
+
+Instead:
+
+```text
+Shared Signal Ontology
+        ↓
+Requirement-specific rules
+```
+
+For example:
+
+```text
+country
+industry
+data_type
+processing_activity
+customer_type
+government_customer
+regulated_entity
+security_policy
+data_location
+```
+
+can be reused by many requirement packs.
+
+---
+
+## 14.7 Ask the Minimum Necessary Questions
+
+Customer questions should be selected based on their ability to reduce uncertainty.
+
+The ideal flow is:
+
+```text
+Automatically available signals
+            ↓
+Low-friction questions
+            ↓
+Architecture / usage signals
+            ↓
+Targeted verification
+            ↓
+Manual review only when necessary
+```
+
+The system should avoid presenting customers with a huge compliance questionnaire upfront.
+
+---
+
+## 14.8 Every Rule Must Be Explainable
+
+For every assessment, the system should be able to answer:
+
+```text
+Why did you reach this result?
+```
+
+The answer should identify:
+
+* Signals used
+* Evidence supporting those signals
+* Rules triggered
+* Derived concepts
+* Missing information
+* Confidence
+* Source
+* Recommended next action
+
+Example:
+
+```text
+Result:
+Potential DORA relevance
+
+Why:
+✓ Customer operates in the EU
+✓ Customer operates in financial services
+✓ Customer uses cloud ICT services
+
+Unknown:
+? Regulated entity classification
+? Supervisory authority
+
+Next question:
+Does the organisation operate under a financial
+services licence or supervisory authority?
+
+Source:
+[Authoritative source]
+```
+
+---
+
+## 14.9 Sources Must Be First-Class Data
+
+Every important requirement and rule should have traceability to its source.
+
+At minimum:
+
+```text
+Source
+├── Authority
+├── Title
+├── URL
+├── Article / Section
+├── Effective Date
+├── Retrieved Date
+└── Last Reviewed Date
+```
+
+This enables:
+
+* Auditing
+* Review
+* Versioning
+* Regulatory change management
+* Explainability
+* Human validation
+
+---
+
+## 14.10 Assessments Must Be Reproducible
+
+Given the same:
+
+```text
+Input Signals
++
+Evidence
++
+Requirement Pack Version
++
+Rule Version
+```
+
+the system should produce the same assessment.
+
+Therefore, assessment results should retain:
+
+```text
+assessmentId
+timestamp
+requirementPackVersion
+ruleVersion
+signals
+evidence
+ruleResults
+derivedConcepts
+assessmentStatus
+confidence
+missingInformation
+questions
+```
+
+This will be important when requirements or rules change.
+
+---
+
+## 14.11 Historical Versions Matter
+
+Regulatory requirements change.
+
+Therefore:
+
+```text
+Requirement Pack
+        ↓
+Version 1
+Version 2
+Version 3
+...
+```
+
+should be supported.
+
+Historical assessments should remain explainable against the version that produced them.
+
+---
+
+# Final Architecture Principle
+
+The system should not be positioned as simply a:
+
+```text
+Privacy Law Checker
+```
+
+The broader and more accurate description is:
+
+> **A signal-driven requirements intelligence platform that detects regulatory, compliance, security, architecture, sovereignty, and governance requirements that may affect a customer's migration to Atlassian Cloud.**
+
+The central architecture is:
+
+```text
+                    ┌───────────────────────┐
+                    │   Customer Signals    │
+                    └───────────┬───────────┘
+                                │
+                                ▼
+                    ┌───────────────────────┐
+                    │       Evidence        │
+                    └───────────┬───────────┘
+                                │
+                                ▼
+                    ┌───────────────────────┐
+                    │   Signal Ontology     │
+                    │   + Derived Concepts  │
+                    └───────────┬───────────┘
+                                │
+                                ▼
+                    ┌───────────────────────┐
+                    │     Rule Engine       │
+                    │ TRUE / FALSE / UNKNOWN│
+                    └───────────┬───────────┘
+                                │
+                                ▼
+                    ┌───────────────────────┐
+                    │ Applicability Engine  │
+                    └───────────┬───────────┘
+                                │
+                    ┌───────────┴───────────┐
+                    │                       │
+                    ▼                       ▼
+          ┌─────────────────┐    ┌──────────────────┐
+          │    Confidence   │    │ Missing Information│
+          └────────┬────────┘    └─────────┬────────┘
+                   │                       │
+                   └───────────┬───────────┘
+                               ▼
+                    ┌───────────────────────┐
+                    │   Question Engine     │
+                    └───────────┬───────────┘
+                                │
+                                ▼
+                    ┌───────────────────────┐
+                    │     Assessment        │
+                    │                       │
+                    │ Likely Applicable     │
+                    │ Potentially Applicable│
+                    │ Not Indicated         │
+                    │ Insufficient Info     │
+                    │ Manual Review         │
+                    └───────────┬───────────┘
+                                │
+                ┌───────────────┼────────────────┐
+                │               │                │
+                ▼               ▼                ▼
+        ┌──────────────┐ ┌──────────────┐ ┌───────────────┐
+        │ Requirements │ │  Atlassian   │ │   Migration   │
+        │ / Obligations│ │  Capability  │ │     Risk      │
+        └──────────────┘ └──────────────┘ └───────────────┘
+```
+
+## The Most Important Rule
+
+> **The system must never pretend to know something that the available evidence does not support.**
+
+Therefore, every result must be capable of saying:
+
+```text
+Likely applicable
+Potentially applicable
+Not currently indicated
+Insufficient information
+Manual review required
+Cannot determine from available signals
+```
+
+That principle is what should make this system more trustworthy than:
+
+* A generic AI chatbot
+* A static region × industry × segment matrix
+* A simple checklist
+* A rule engine that only produces Yes / No answers
+
+---
+
+# Recommended Next Step
+
+The next implementation step should be:
+
+```text
+Iteration 0
+    ↓
+Generic Core Schemas & Architecture
+    ↓
+HIPAA Requirement Pack
+    ↓
+End-to-End Validation
+    ↓
+GDPR
+    ↓
+FedRAMP
+    ↓
+DORA
+    ↓
+Data Residency
+    ↓
+Technical Requirement Pack
+```
+
+The first goal is **not to build every regulation**.
+
+The first goal is to prove that:
+
+```text
+Signals
+   ↓
+Concepts
+   ↓
+Rules
+   ↓
+Evidence
+   ↓
+Questions
+   ↓
+Assessment
+   ↓
+Capability
+   ↓
+Migration Risk
+```
+
+works as a **generic, explainable, evidence-driven architecture** across fundamentally different requirement types.
+
+Once that is proven, expanding the system should primarily involve adding and maintaining high-quality requirement packs rather than repeatedly changing the core platform.
